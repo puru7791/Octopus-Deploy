@@ -1,0 +1,133 @@
+{
+  "Id": "variableset-Projects-1",
+  "OwnerId": "Projects-1",
+  "Version": 2,
+  "Variables": [
+    {
+      "Name": "ENV",
+      "Value": "DEV",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-2"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Name": "ENV",
+      "Value": "REVIEW",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-4"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Name": "ENV",
+      "Value": "QA",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-3"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Name": "ENV",
+      "Value": "PROD",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-1"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Name": "app:port",
+      "Value": "4444",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Name": "profiles:Octopus.Trident.Database.DbUp:commandName",
+      "Value": "",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    }
+  ],
+  "ScopeValues": {
+    "Environments": [
+      {
+        "Id": "Environments-2",
+        "Name": "Development"
+      },
+      {
+        "Id": "Environments-5",
+        "Name": "Staging"
+      },
+      {
+        "Id": "Environments-4",
+        "Name": "Test"
+      },
+      {
+        "Id": "Environments-3",
+        "Name": "QA"
+      },
+      {
+        "Id": "Environments-1",
+        "Name": "Production"
+      }
+    ],
+    "Machines": [],
+    "Actions": [
+      {
+        "Id": "274001c1-c66a-42f3-9348-38f9b954864e",
+        "Name": "1. Hello world (using PowerShell)"
+      }
+    ],
+    "Roles": [],
+    "Channels": [
+      {
+        "Id": "Channels-1",
+        "Name": "Default"
+      }
+    ],
+    "TenantTags": [],
+    "Processes": [
+      {
+        "ProcessType": "Deployment",
+        "Id": "Projects-1",
+        "Name": "Deployment Process"
+      }
+    ]
+  },
+  "SpaceId": "Spaces-1",
+  "Links": {
+    "Self": "/api/Spaces-1/projects/Projects-1/variables"
+  }
+}
