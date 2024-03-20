@@ -70,8 +70,18 @@
       "IsSensitive": false
     },
     {
+      "Name": "Application_Name",
+      "Value": "Terraform_From_GitHub",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
       "Name": "profiles:Octopus.Trident.Database.DbUp:commandName",
-      "Value": "",
+      "Value": "NewValue",
       "Description": null,
       "Scope": {},
       "IsEditable": true,
