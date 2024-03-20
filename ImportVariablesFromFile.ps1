@@ -1,12 +1,12 @@
 # Define octopus variables
-$octopusURL = "https://your.octopus.app"
-$octopusAPIKey = "API-YOURAPIKEY"
+$octopusURL = ${{ secrets.OCTOPUS_SERVER_URL }}
+$octopusAPIKey = ${{ secrets.OCTOPUS_API_KEY }}
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 
 # Define working variables
 $spaceName = "Default"
-$variableSetFilePath = "/path/to/project-variables-to-import.json"
-$destinationProjectName = "your-project-to-import-to"
+$variableSetFilePath = "demo-variables.json"
+$destinationProjectName = "Terraform"
 
 # Set this value to add additional variable values found on source data not in destination
 $addAdditionalVariableValuesOnExistingVariableSets = $True
