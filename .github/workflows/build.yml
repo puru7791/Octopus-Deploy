@@ -14,6 +14,9 @@ jobs:
 
     - name: Run PowerShell script
       shell: pwsh
+      env:
+        OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+        OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       run: |
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:
