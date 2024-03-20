@@ -1,0 +1,28 @@
+name: Import Octopus Variables
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  import_variables:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Import Variables to Octopus Deploy
+      run: |
+        # Replace these variables with your values
+        OCTOPUS_SERVER_URL=https://your-octopus-server-url
+        OCTOPUS_API_KEY=your-octopus-api-key
+        PROJECT_ID=your-project-id
+        JSON_FILE_PATH=path/to/variables.json
+        
+        # Import variables using Octopus Deploy API
+        curl -X POST "${OCTOPUS_SERVER_URL}/api/variables/$PROJECT_ID/import" \
+          -H "X-Octopus-ApiKey: $OCTOPUS_API_KEY" \
+          -H "Content-Type: application/json" \
+          --data-binary "@${JSON_FILE_PATH}"
