@@ -16,10 +16,10 @@ jobs:
     - name: Import Variables to Octopus Deploy
       run: |
         # Replace these variables with your values
-        OCTOPUS_SERVER_URL=https://your-octopus-server-url
-        OCTOPUS_API_KEY=your-octopus-api-key
-        PROJECT_ID=your-project-id
-        JSON_FILE_PATH=path/to/variables.json
+        OCTOPUS_SERVER_URL=${{ secrets.OCTOPUS_SERVER_URL }}
+        OCTOPUS_API_KEY=${{ secrets.OCTOPUS_API_KEY }}
+        PROJECT_ID=Projects-41
+        JSON_FILE_PATH=demo-variables.json
         
         # Import variables using Octopus Deploy API
         curl -X POST "${OCTOPUS_SERVER_URL}/api/variables/$PROJECT_ID/import" \
