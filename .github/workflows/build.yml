@@ -17,6 +17,8 @@ jobs:
       env:
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        ProjectName: Terraform
+        SpaceName: Default
       run: |
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:
