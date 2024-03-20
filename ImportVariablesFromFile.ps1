@@ -5,7 +5,7 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 
 # Define working variables
 #$spaceName = "Default"
-$spaceName = $env:SpaceName"
+$spaceName = "$env:SpaceName"
 $variableSetFilePath = "demo-variables.json"
 $destinationProjectName = "$env:ProjectName"
 
