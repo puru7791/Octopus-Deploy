@@ -1,28 +1,20 @@
-name: Import Octopus Variables
-
+name: Run PowerShell Script
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your main branch name
 
 jobs:
-  import_variables:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Import Variables to Octopus Deploy
+    - name: Run PowerShell script
+      shell: pwsh
       run: |
-        # Replace these variables with your values
-        OCTOPUS_SERVER_URL=${{ secrets.OCTOPUS_SERVER_URL }}
-        OCTOPUS_API_KEY=${{ secrets.OCTOPUS_API_KEY }}
-        PROJECT_ID=Projects-41
-        JSON_FILE_PATH=demo-variables.json
-        
-        # Import variables using Octopus Deploy API
-        curl -X POST "${OCTOPUS_SERVER_URL}/api/variables/$PROJECT_ID/import" \
-          -H "X-Octopus-ApiKey: $OCTOPUS_API_KEY" \
-          -H "Content-Type: application/json" \
-          --data-binary "@${JSON_FILE_PATH}"
+        # This is where you put your PowerShell script content
+        # For example, you can run a specific PowerShell script file:
+        ./ImportVariablesFromFile.ps1
