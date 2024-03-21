@@ -23,5 +23,5 @@ jobs:
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:
         #./ImportVariablesFromFile.ps1
-        ./extractOctopusVariables.ps1
+        ./extract_projectvars_json.ps1
         
