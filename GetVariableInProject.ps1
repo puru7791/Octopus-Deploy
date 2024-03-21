@@ -46,11 +46,11 @@ Function Get-VariableValue {
 }
 
 ################ INPUT THESE VALUES ################
-$OctopusServerUrl = "" #PUT YOUR SERVER LOCATION HERE. (e.g. http://localhost)
-$ApiKey = "" #PUT YOUR API KEY HERE
-$ProjectName = "" #PUT THE NAME OF THE PROJECT THAT HOUSES THE VARIABLES HERE
-$SpaceName = ""         #PUT THE NAME OF THE SPACE THAT HAS THE PROJECT IN IT
-$CurrentEnv = "" #PUT ENVIRONMENT NAME HERE
+$OctopusServerUrl = "$env:OCTOPUS_SERVER_URL" #PUT YOUR SERVER LOCATION HERE. (e.g. http://localhost)
+$ApiKey = "$env:OCTOPUS_API_KEY" #PUT YOUR API KEY HERE
+$ProjectName = "$env:ProjectName" #PUT THE NAME OF THE PROJECT THAT HOUSES THE VARIABLES HERE
+$SpaceName = "Spaces-1" #PUT THE NAME OF THE SPACE THAT HAS THE PROJECT IN IT
+$CurrentEnv = "Development" #PUT ENVIRONMENT NAME HERE
 
 ################ INPUT THESE VALUES #################
 
