@@ -1,0 +1,25 @@
+variable "Var1" {
+    value "value1" {}
+}
+
+variable "Var2" {
+    value "val2" {
+        environment = ["development"]
+    }
+
+    value "val2.1" {
+        environment = ["test"]
+    }
+
+    value "val2.2" {
+        environment = ["qa"]
+    }
+
+    value "val2.3" {
+        environment = ["staging"]
+    }
+
+    value "val2.4" {
+        environment = ["production"]
+    }
+}
