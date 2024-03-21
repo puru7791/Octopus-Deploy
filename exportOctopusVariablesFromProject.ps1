@@ -6,9 +6,6 @@ $spaceName = "Default"
 # Define the output JSON file path
 $outputFilePath = "variables.json"
 
-# Base64 encode the API key
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($apiKey)"))
-
 # Function to make REST API requests
 function Invoke-OctopusApi {
     param (
@@ -17,11 +14,9 @@ function Invoke-OctopusApi {
         [string]$Body = $null
     )
 
-    $headers = @{
-        Authorization = "Basic $base64AuthInfo"
-    }
+    $header = @{ "X-Octopus-ApiKey" = $apiKey }
 
-    $response = Invoke-RestMethod -Uri $Url -Method $Method -Headers $headers -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Uri $Url -Method $Method -Headers $header -ContentType "application/json" -Body $Body
     return $response
 }
 # Get space
