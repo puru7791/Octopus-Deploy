@@ -1,6 +1,6 @@
 {
-  "Id": "variableset-Projects-41",
-  "OwnerId": "Projects-41",
+  "Id": "variableset-Projects-1",
+  "OwnerId": "Projects-1",
   "Version": 2,
   "Variables": [
     {
@@ -133,7 +133,7 @@
     "Roles": [],
     "Channels": [
       {
-        "Id": "Channels-41",
+        "Id": "Channels-1",
         "Name": "Default"
       }
     ],
@@ -141,13 +141,13 @@
     "Processes": [
       {
         "ProcessType": "Deployment",
-        "Id": "Projects-41",
+        "Id": "Projects-1",
         "Name": "Deployment Process"
       }
     ]
   },
   "SpaceId": "Spaces-1",
   "Links": {
-    "Self": "/api/Spaces-1/projects/Projects-41/variables"
+    "Self": "/api/Spaces-1/projects/Projects-1/variables"
   }
 }
