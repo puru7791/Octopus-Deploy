@@ -1,0 +1,25 @@
+step "deploy-a-helm-chart" {
+    name = "Deploy a Helm Chart"
+
+    action {
+        action_type = "Octopus.HelmChartUpgrade"
+        properties = {
+            Octopus.Action.Helm.ChartDirectory = "."
+            Octopus.Action.Helm.ClientVersion = "V3"
+            Octopus.Action.Helm.ResetValues = "True"
+            Octopus.Action.Package.DownloadOnTentacle = "False"
+            Octopus.Action.Package.FeedId = "octopus-server-built-in"
+            Octopus.Action.Package.PackageId = "Package1"
+        }
+        worker_pool_variable = ""
+
+        packages {
+            acquisition_location = "Server"
+            feed = "octopus-server-built-in"
+            package_id = "Package1"
+            properties = {
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
