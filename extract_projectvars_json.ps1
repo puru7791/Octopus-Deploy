@@ -1,4 +1,4 @@
-PowerShell script to extract project-specific variables from Octopus Deploy in JSON format:
+#PowerShell script to extract project-specific variables from Octopus Deploy in JSON format:
  
 # Replace these variables with your Octopus Deploy API key and server URL
 $apiKey = "$env:OCTOPUS_API_KEY"
