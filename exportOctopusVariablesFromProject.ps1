@@ -6,6 +6,7 @@ $spaceName = "Default"
 # Define the output JSON file path
 $outputFilePath = "variables.json"
 
+
 # Function to make REST API requests
 function Invoke-OctopusApi {
     param (
@@ -23,7 +24,7 @@ function Invoke-OctopusApi {
 $spaceList = Invoke-RestMethod "$octopusURL/api/spaces/all" -Headers $header
 $space = $spaceList | Where-Object { $_.Name -eq $spaceName }
 
-# Get destination project
+# Get Source project
 $projectList = Invoke-RestMethod "$octopusURL/api/$($space.Id)/projects/all" -Headers $header
 $sourceProject = $projectList | Where-Object { $_.Name -eq $projectName }
 $sourceProjectVariableSetId = $sourceProject.VariableSetId
@@ -34,7 +35,8 @@ $variablesUrl = "$octopusURL/api/$($space.Id)/variables/$sourceProjectVariableSe
 ##$variablesUrl = "$octopusUrl/api/variables/$projectName/$sourceProjectVariableSetId"
 $variablesResponse = Invoke-OctopusApi -Url $variablesUrl
 # Get all variables and library variable sets
-$variablesUrl = "$octopusUrl/api/variables/$projectName/all"
+$variablesUrl = "$octopusUrl/api/$($space.Id)/projects/$($sourceProject.Id)/variables" # variables/$projectName/all"
+#$variablesUrl = "$octopusUrl/api/variables/$projectName/all"
 $variablesResponse = Invoke-OctopusApi -Url $variablesUrl
 
 # Store variables in a hashtable
