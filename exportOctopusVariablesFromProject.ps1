@@ -5,7 +5,7 @@ $projectName = "$env:ProjectName"
 $spaceName = "Default"
 # Define the output JSON file path
 $outputFilePath = "variables.json"
-
+$header = @{ "X-Octopus-ApiKey" = $apiKey }
 
 # Function to make REST API requests
 function Invoke-OctopusApi {
