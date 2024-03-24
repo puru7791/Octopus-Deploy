@@ -4,7 +4,7 @@ $apiKey = "$env:OCTOPUS_API_KEY"
 $projectName = "$env:ProjectName"
 $spaceName = "Default"
 # Define the output JSON file path
-$outputFilePath = "exportedVariables.json"
+$outputFilePath = "$env:outputVariableName"
 
 # Function to make REST API requests
 function Invoke-OctopusApi {
