@@ -19,7 +19,7 @@ jobs:
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         ProjectName: FirstProject
         SpaceName: Default
-        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+        #GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       run: |
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:
