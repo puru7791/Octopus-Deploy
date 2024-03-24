@@ -62,7 +62,7 @@ if ($variablesResponse -eq $null) {
 }
 
 # Convert response to JSON and save to file
-$variablesResponse | ConvertTo-Json | Out-File -FilePath $outputFilePath
+$variablesResponse | ConvertTo-Json -Depth 9 | Out-File -FilePath $outputFilePath
 
 Write-Host "Variables data has been exported and saved to $outputFilePath"
 
