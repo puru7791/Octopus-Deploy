@@ -38,13 +38,13 @@ jobs:
         # git push
     - name: Commit report
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name 'Purushotham B'
         git config --global user.email 'puru7791@users.noreply.github.com'
-        git remote set-url origin https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.gitUp
         #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
         git checkout "${GITHUB_REF:11}"
         git add -A
         git commit -m "Auto-generated: Extracted Octopus project variables"
-        git push
+        git push origin "${GITHUB_REF:11}"
