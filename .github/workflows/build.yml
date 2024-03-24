@@ -19,6 +19,7 @@ jobs:
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         ProjectName: FirstProject
         SpaceName: Default
+        GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       run: |
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:
@@ -29,4 +30,11 @@ jobs:
         #./GetVariableInProject.ps1
         #./exportOctopusVariablesFromProject.ps1
         ./exportProjectVariable_Pattern1.ps1
+        # Add, commit, and push changes
+        git config --global user.email "puru7791@gmail.com"
+        git config --global user.name "puru7791"
+        git add $outputFilePath
+        git commit -m "Update variables JSON file from github actions"
+        git push
+        
         
