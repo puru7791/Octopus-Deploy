@@ -15,9 +15,9 @@ function Invoke-OctopusApi {
         [string]$Body = $null
     )
 
-    $header = @{ "X-Octopus-ApiKey" = $apiKey }
+    $headers = @{ "X-Octopus-ApiKey" = $apiKey }
 
-    $response = Invoke-RestMethod -Uri $Url -Method $Method -Headers $header -ContentType "application/json" -Body $Body
+    $response = Invoke-RestMethod -Uri $Url -Method $Method -Headers $headers -ContentType "application/json" -Body $Body
     return $response
 }
 # Get space
