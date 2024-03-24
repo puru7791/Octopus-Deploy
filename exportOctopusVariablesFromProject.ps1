@@ -30,7 +30,7 @@ $sourceProject = $projectList | Where-Object { $_.Name -eq $projectName }
 $sourceProjectVariableSetId = $sourceProject.VariableSetId
 
 # Get all variables and library variable sets
-$variablesUrl = "$octopusURL/api/$($space.Id)/variables/$sourceProjectVariableSetId"
+$variablesUrl = "$octopusURL/api/$($space.Id)/$($sourceProject)/variables"
 
 ##$variablesUrl = "$octopusUrl/api/variables/$projectName/$sourceProjectVariableSetId"
 $variablesResponse = Invoke-OctopusApi -Url $variablesUrl
