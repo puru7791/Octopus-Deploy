@@ -31,8 +31,6 @@ jobs:
         #./GetVariableInProject.ps1
         #./exportOctopusVariablesFromProject.ps1
         ./exportProjectVariable_Pattern1.ps1
-    - name: Commit report
-      run: |
         git config --global user.name 'Purushotham'
         git config --global user.email 'puru7791@users.noreply.github.com'
         git add "$env:outputVariableName"
