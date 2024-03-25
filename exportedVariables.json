@@ -1,7 +1,7 @@
 {
   "Id": "variableset-Projects-1",
   "OwnerId": "Projects-1",
-  "Version": 9,
+  "Version": 12,
   "Variables": [
     {
       "Id": "0345cc77-ecfa-4c80-83a8-a425d7f14803",
@@ -113,6 +113,36 @@
       "Value": "xyz-13u239",
       "Description": null,
       "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "a4ed4573-ec91-a044-9b0f-9079f1ba5868",
+      "Name": "appName",
+      "Value": "FirstProject",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-1"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "f35c574e-6842-9bf4-b0ae-2c7ab897cf5c",
+      "Name": "appName",
+      "Value": "FirstProject",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-2"
+        ]
+      },
       "IsEditable": true,
       "Prompt": null,
       "Type": "String",
