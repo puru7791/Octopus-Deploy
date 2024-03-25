@@ -1,7 +1,7 @@
 {
   "Id": "variableset-Projects-1",
   "OwnerId": "Projects-1",
-  "Version": 8,
+  "Version": 9,
   "Variables": [
     {
       "Id": "0345cc77-ecfa-4c80-83a8-a425d7f14803",
@@ -100,6 +100,17 @@
       "Id": "dc499786-54a9-4621-8880-0a82c3232c7d",
       "Name": "profiles:Octopus.Trident.Database.DbUp:commandName",
       "Value": "NewValue",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "18d9b1aa-7d68-c5ed-335d-70c31811a596",
+      "Name": "clientID",
+      "Value": "xyz-13u239",
       "Description": null,
       "Scope": {},
       "IsEditable": true,
