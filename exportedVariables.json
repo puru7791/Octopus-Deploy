@@ -1,0 +1,156 @@
+{
+  "Id": "variableset-Projects-1",
+  "OwnerId": "Projects-1",
+  "Version": 8,
+  "Variables": [
+    {
+      "Id": "0345cc77-ecfa-4c80-83a8-a425d7f14803",
+      "Name": "ENV",
+      "Value": "DEV",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-1"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "a76a0da2-9fff-4b5f-84ba-6fa9f630ab0d",
+      "Name": "ENV",
+      "Value": "REVIEW",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-4"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "ae21a783-bcbc-42aa-a7bf-9aff07e7b2ca",
+      "Name": "ENV",
+      "Value": "QA",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-5"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "d28df34d-926b-4888-8664-eca3e6acbaa9",
+      "Name": "ENV",
+      "Value": "PROD",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-3"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "d395e549-f4ce-4091-a92d-cee4b19c9bf7",
+      "Name": "app:port",
+      "Value": "4444",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "1a5d2c29-f898-442f-9b28-adf3770e8a56",
+      "Name": "ApplicationID",
+      "Value": "111222",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "84587fb1-7332-4de9-9d72-9666d1f77a3a",
+      "Name": "Application_Name",
+      "Value": "Terraform_From_GitHub",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "dc499786-54a9-4621-8880-0a82c3232c7d",
+      "Name": "profiles:Octopus.Trident.Database.DbUp:commandName",
+      "Value": "NewValue",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    }
+  ],
+  "ScopeValues": {
+    "Environments": [
+      {
+        "Id": "Environments-1",
+        "Name": "Development"
+      },
+      {
+        "Id": "Environments-2",
+        "Name": "Staging"
+      },
+      {
+        "Id": "Environments-3",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-4",
+        "Name": "Test"
+      },
+      {
+        "Id": "Environments-5",
+        "Name": "QA"
+      }
+    ],
+    "Machines": [],
+    "Actions": [],
+    "Roles": [],
+    "Channels": [
+      {
+        "Id": "Channels-1",
+        "Name": "Default"
+      }
+    ],
+    "TenantTags": [],
+    "Processes": [
+      {
+        "ProcessType": "Deployment",
+        "Id": "Projects-1",
+        "Name": "Deployment Process"
+      }
+    ]
+  },
+  "SpaceId": "Spaces-1",
+  "Links": {
+    "Self": "/api/Spaces-1/projects/Projects-1/variables"
+  }
+}
