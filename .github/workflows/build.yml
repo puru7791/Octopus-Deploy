@@ -47,5 +47,9 @@ jobs:
       shell: pwsh
       env: 
         destProjectName: Demo1
+        OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+        OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        ProjectName: FirstProject
+        SpaceName: Default
       run: |
         ./ImportVariablesFromFile.ps1
