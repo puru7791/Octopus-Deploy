@@ -181,5 +181,80 @@
     "Prompt": null,
     "Type": "String",
     "IsSensitive": false
+  },
+  {
+    "Id": "38cb4dc2-bd84-fe2e-9b21-6c274ac2e6f6",
+    "Name": "app.version",
+    "Value": "dev-0.1",
+    "Description": null,
+    "Scope": {
+      "Environment": [
+        "Environments-1"
+      ]
+    },
+    "IsEditable": true,
+    "Prompt": null,
+    "Type": "String",
+    "IsSensitive": false
+  },
+  {
+    "Id": "c14549c8-32bc-d28b-c122-50175b5f9c19",
+    "Name": "app.version",
+    "Value": "test-0.1",
+    "Description": null,
+    "Scope": {
+      "Environment": [
+        "Environments-4"
+      ]
+    },
+    "IsEditable": true,
+    "Prompt": null,
+    "Type": "String",
+    "IsSensitive": false
+  },
+  {
+    "Id": "4918113b-ca2f-576a-effb-1ac5c9682ef6",
+    "Name": "app.version",
+    "Value": "qa-0.1",
+    "Description": null,
+    "Scope": {
+      "Environment": [
+        "Environments-5"
+      ]
+    },
+    "IsEditable": true,
+    "Prompt": null,
+    "Type": "String",
+    "IsSensitive": false
+  },
+  {
+    "Id": "dd17f176-0300-3b03-f940-447ffa993755",
+    "Name": "app.version",
+    "Value": "staging-0.1",
+    "Description": null,
+    "Scope": {
+      "Environment": [
+        "Environments-2"
+      ]
+    },
+    "IsEditable": true,
+    "Prompt": null,
+    "Type": "String",
+    "IsSensitive": false
+  },
+  {
+    "Id": "57809f43-2f7f-71ce-3c89-ed9b5a82feac",
+    "Name": "app.version",
+    "Value": "live-0.1",
+    "Description": null,
+    "Scope": {
+      "Environment": [
+        "Environments-3"
+      ]
+    },
+    "IsEditable": true,
+    "Prompt": null,
+    "Type": "String",
+    "IsSensitive": false
   }
 ]
