@@ -21,6 +21,7 @@ jobs:
         SpaceName: Default
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         outputVariableName: exportedVariables.json
+        variableSetName: TestingVS
         exportedVariablesSet: exportedVariableSet.json
       run: |
         # This is where you put your PowerShell script content
