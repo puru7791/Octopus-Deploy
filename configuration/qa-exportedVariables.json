@@ -1,0 +1,94 @@
+{
+    "Id": "variableset-Projects-1",
+    "OwnerId": "Projects-1",
+    "Version": 14,
+    "Variables": [
+      {
+        "Id": "ae21a783-bcbc-42aa-a7bf-9aff07e7b2ca",
+        "Name": "ENV",
+        "Value": "QA",
+        "Description": null,
+        "Scope": {
+          "Environment": [
+            "Environments-5"
+          ]
+        },
+        "IsEditable": true,
+        "Prompt": null,
+        "Type": "String",
+        "IsSensitive": false
+      },
+      {
+        "Id": "f1eb5a8f-9e48-665c-9e7a-3c4fe91a8555",
+        "Name": "apiName",
+        "Value": "firstapp-qa",
+        "Description": null,
+        "Scope": {
+          "Environment": [
+            "Environments-5"
+          ]
+        },
+        "IsEditable": true,
+        "Prompt": null,
+        "Type": "String",
+        "IsSensitive": false
+      },
+      {
+        "Id": "271f9b82-d82c-f778-504e-29784b62083b",
+        "Name": "certname",
+        "Value": "qa-myapp.com",
+        "Description": null,
+        "Scope": {
+          "Environment": [
+            "Environments-5"
+          ]
+        },
+        "IsEditable": true,
+        "Prompt": null,
+        "Type": "String",
+        "IsSensitive": false
+      }
+    ],
+    "ScopeValues": {
+      "Environments": [
+        {
+          "Id": "Environments-1",
+          "Name": "Development"
+        },
+        {
+          "Id": "Environments-2",
+          "Name": "Staging"
+        },
+        {
+          "Id": "Environments-3",
+          "Name": "Production"
+        },
+        {
+          "Id": "Environments-4",
+          "Name": "Test"
+        },
+        {
+          "Id": "Environments-5",
+          "Name": "QA"
+        }
+      ],
+      "Channels": [
+        {
+          "Id": "Channels-1",
+          "Name": "Default"
+        }
+      ],
+      "Processes": [
+        {
+          "ProcessType": "Deployment",
+          "Id": "Projects-1",
+          "Name": "Deployment Process"
+        }
+      ]
+    },
+    "SpaceId": "Spaces-1",
+    "Links": {
+      "Self": "/api/Spaces-1/projects/Projects-1/variables"
+    }
+  }
+  
