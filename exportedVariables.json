@@ -1,7 +1,7 @@
 {
   "Id": "variableset-Projects-1",
   "OwnerId": "Projects-1",
-  "Version": 12,
+  "Version": 14,
   "Variables": [
     {
       "Id": "0345cc77-ecfa-4c80-83a8-a425d7f14803",
@@ -141,6 +141,156 @@
       "Scope": {
         "Environment": [
           "Environments-2"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "bd7170f0-1d1d-8a9a-03cc-530482b89eee",
+      "Name": "apiName",
+      "Value": "firstapp-dev",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-1"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "f1eb5a8f-9e48-665c-9e7a-3c4fe91a8555",
+      "Name": "apiName",
+      "Value": "firstapp-qa",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-5"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "a125f68a-2106-d352-ceac-d1d29338f2d4",
+      "Name": "apiName",
+      "Value": "firstapp-test",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-4"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "46030455-1747-e66e-34d6-3b24af45e5d0",
+      "Name": "apiName",
+      "Value": "firstapp-staging",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-2"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "3ca962c3-f59e-a1f4-511e-c5854ec405f3",
+      "Name": "apiName",
+      "Value": "firstapp-prod",
+      "Description": "",
+      "Scope": {
+        "Environment": [
+          "Environments-3"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "b88eb90c-c44c-751f-8d94-a4363cf86373",
+      "Name": "certname",
+      "Value": "dev-myapp.com",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-1"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "271f9b82-d82c-f778-504e-29784b62083b",
+      "Name": "certname",
+      "Value": "qa-myapp.com",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-5"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "ff4bd0e8-4bb8-7d96-c47a-981b7823656a",
+      "Name": "certname",
+      "Value": "test-myapp.com",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-4"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "68953de0-6b9b-315b-acc0-b7da0ac00546",
+      "Name": "certname",
+      "Value": "staging-myapp.com",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-2"
+        ]
+      },
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
+      "Id": "1d1b3138-2605-d5d7-0253-b1e07908e729",
+      "Name": "certname",
+      "Value": "myapp.com",
+      "Description": null,
+      "Scope": {
+        "Environment": [
+          "Environments-3"
         ]
       },
       "IsEditable": true,
