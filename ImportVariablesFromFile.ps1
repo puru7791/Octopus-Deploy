@@ -6,7 +6,7 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 # Define working variables
 #$spaceName = "Default"
 $spaceName = "$env:SpaceName"
-$variableSetFilePath = "exported*.json"
+$variableSetFilePath = "$env:variableSetFilePath"
 $destinationProjectName = "$env:destProjectName"
 
 # Set this value to add additional variable values found on source data not in destination
