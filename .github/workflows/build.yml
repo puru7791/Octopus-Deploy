@@ -1,9 +1,12 @@
 name: Run PowerShell Script
 on:
   push:
-    branches:
-      - main  # Change this to your main branch name
-
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+    types: [opened, reopened, synchronize]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,6 +24,7 @@ jobs:
         SpaceName: Default
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         outputVariableName: exportedVariables.json
+        variableSetName: TestingVS
         exportedVariablesSet: exportedVariableSet.json
       run: |
         # This is where you put your PowerShell script content
