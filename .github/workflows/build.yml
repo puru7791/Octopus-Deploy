@@ -50,6 +50,6 @@ jobs:
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         ProjectName: FirstProject
         SpaceName: Default
-        variableSetFilePath: ./configurations/dev-*.json
+        variableSetFilePath: ./configurations/dev-exportedVariables.json
       run: |
         ./ImportVariablesFromFile.ps1
