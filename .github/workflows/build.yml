@@ -60,7 +60,7 @@ jobs:
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
-        jsonFilePath: exportedVariableSet.json
+        variableSetjsonFilePath: exportedVariableSet.json
         libraryVariableSetName: AppSettings
       run: | 
         ./importLibraryvariableSet.ps1
