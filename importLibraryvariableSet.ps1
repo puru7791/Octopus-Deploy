@@ -17,11 +17,11 @@ $jsonVariables = Get-Content $jsonFilePath | ConvertFrom-Json
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
 
 
-Write-Host "Looking for library variable set '$libraryVariableSet'"
+Write-Host "Looking for library variable set '$libraryVariableSetName'"
 $LibraryvariableSets = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/libraryvariablesets?contentType=Variables" -Headers $header)
 $LibraryVariableSet = $LibraryVariableSets.Items | Where-Object { $_.Name -eq $libraryVariableSetName }
 
-if ($null -eq $libraryVariableSet) {
+if ($null -eq $LibraryVariableSet) {
     Write-Warning "Library variable set not found with name '$libraryVariableSetName'."
     exit
 }
