@@ -1,13 +1,12 @@
 # Define octopus variables
-$octopusURL = "https://puru.octopus.app"
-$octopusAPIKey = "API-OGBD5UBBRSZHINDQOL7JJPE5C0XBTSS"
+$octopusURL = "$env:OCTOPUS_SERVER_URL"
+$octopusAPIKey = "$env:OCTOPUS_API_KEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 
 # Define working variables
-#$spaceName = "Default"
-$spaceName = "Default"
-$variableSetFilePath = "C:\Users\Naresh\Dropbox\My PC (LAPTOP-C5E2HAQ4)\Downloads\exportedVariableSet.json"
-$destinationvariableSetName = "AppSettings"
+$spaceName = "$env:SpaceName"
+$variableSetFilePath = "$env:variableSetjsonFilePath"
+$destinationvariableSetName = "$env:libraryVariableSetName"
 
 # Set this value to add additional variable values found on source data not in destination
 $addAdditionalVariableValuesOnExistingVariableSets = $True
