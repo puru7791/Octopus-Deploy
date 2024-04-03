@@ -63,7 +63,7 @@ jobs:
         variableSetjsonFilePath: exportedVariableSet.json
         libraryVariableSetName: AppSettings
       run: | 
-        ./importLibraryvariableSet.ps1
+        ./importLibraryvariableSet_pattern2.ps1
 
     - name: Clear Workspace
       if: always()
