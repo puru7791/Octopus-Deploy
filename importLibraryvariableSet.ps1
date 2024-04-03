@@ -17,8 +17,9 @@ $jsonVariables = Get-Content $jsonFilePath | ConvertFrom-Json
 $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
 Write-Host "found the Space ID of $spaceName is $($space.Id)"
 
+# Looking for Library variable set 
 Write-Host "Looking for library variable set '$libraryVariableSetName'"
-$LibraryvariableSets = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/libraryvariablesets?contentType=Variables" -Headers $header)
+$LibraryVariableSets = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/libraryvariablesets?contentType=Variables" -Headers $header)
 $LibraryVariableSet = $LibraryVariableSets.Items | Where-Object { $_.Name -eq $libraryVariableSetName }
 
 if ($null -eq $LibraryVariableSet) {
