@@ -15,45 +15,56 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Run PowerShell script
-      shell: pwsh
-      env:
-        OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
-        OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-        ProjectName: FirstProject
-        SpaceName: Default
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        outputVariableName: exportedVariables.json
-        variableSetName: TestingVS
-        exportedVariablesSet: exportedVariableSet.json
-      run: |
-        # This is where you put your PowerShell script content
-        # For example, you can run a specific PowerShell script file:
-        ./exportProjectVariable_Pattern1.ps1
-        ./exportVariableSetToJson.ps1
-    - name: Commit report
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --global user.name 'Github Action'
-        git config --global user.email 'puru7791@users.noreply.github.com'
-        git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
-        #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-        git checkout "${GITHUB_REF:11}"
-        git add -A
-        git commit -m "Auto-generated: Extracted Octopus project variables"
-        git push origin "${GITHUB_REF:11}"
-    - name: Import variable to the Project
+    # - name: Run PowerShell script
+    #   shell: pwsh
+    #   env:
+    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    #     ProjectName: FirstProject
+    #     SpaceName: Default
+    #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+    #     outputVariableName: exportedVariables.json
+    #     variableSetName: TestingVS
+    #     exportedVariablesSet: exportedVariableSet.json
+    #   run: |
+    #     # This is where you put your PowerShell script content
+    #     # For example, you can run a specific PowerShell script file:
+    #     #./exportProjectVariable_Pattern1.ps1
+    #     #./exportVariableSetToJson.ps1
+    # - name: Commit report
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   run: |
+    #     git config --global user.name 'Github Action'
+    #     git config --global user.email 'puru7791@users.noreply.github.com'
+    #     git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
+    #     #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+    #     git checkout "${GITHUB_REF:11}"
+    #     git add -A
+    #     git commit -m "Auto-generated: Extracted Octopus project variables"
+    #     git push origin "${GITHUB_REF:11}"
+    # - name: Import variable to the Project
+    #   shell: pwsh
+    #   env: 
+    #     destProjectName: Demo1
+    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    #     ProjectName: FirstProject
+    #     SpaceName: Default
+    #     variableSetFilePath: exportedVariableSet.json
+    #   run: |
+    #     ./ImportVariablesFromFile.ps1
+    - name: Import variables to variableset
       shell: pwsh
       env: 
-        destProjectName: Demo1
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-        ProjectName: FirstProject
         SpaceName: Default
-        variableSetFilePath: exportedVariableSet.json
-      run: |
-        ./ImportVariablesFromFile.ps1
+        jsonFilePath: exportedVariableSet.json
+        libraryVariableSetName: AppSettings
+      run: | 
+        ./importLibraryvariableSet.ps1
+
     - name: Clear Workspace
       if: always()
       run: |
