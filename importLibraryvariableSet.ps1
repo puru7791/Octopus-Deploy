@@ -53,14 +53,14 @@ foreach ($variable in $jsonVariables) {
 		
         
     }
-    # # Add the new variable to the Octopus library variable set
-    # $newVariable = @{
-    #     Name = $variableName
-    #     Value = $variableValue
-    # }
+    # Add the new variable to the Octopus library variable set
+    $newVariable = @{
+        Name = $variableName
+        Value = $variableValue
+    }
 
-    # $existingVariables.Variables += $newVariable
-    # Write-Host "Added new variable '$variableName' to the Octopus library variable set."
+    $LibraryVariableSetVariables.Variables += $newVariable
+    Write-Host "Added new variable '$variableName' to the '$libraryVariableSetName'."
 }
 
 # Update the Octopus library variable set with any new variables
