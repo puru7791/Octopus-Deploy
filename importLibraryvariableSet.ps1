@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop";
 # Define the Octopus server URL and API key
-$octopusServerUrl = "$env:OCTOPUS_SERVER_URL"
+$octopusURL = "$env:OCTOPUS_SERVER_URL"
 $octopusAPIKey = "$env:OCTOPUS_API_KEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 # Specify the Space to search in
@@ -28,7 +28,7 @@ if ($null -eq $libraryVariableSet) {
 
 # Get existing variables from the Octopus library variable set
 
-$LibraryVariableSetVariables = (Invoke-RestMethod -Method Get -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $header)
+$LibraryVariableSetVariables = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($Space.Id)/variables/$($LibraryVariableSet.VariableSetId)" -Headers $header)
 
 # Iterate through each variable in the JSON data
 foreach ($variable in $jsonVariables) {
@@ -63,4 +63,4 @@ foreach ($variable in $jsonVariables) {
 }
 
 # Update the Octopus library variable set with any new variables
-$UpdatedLibraryVariableSet = Invoke-RestMethod -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Method Put -Headers $header -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)
+$UpdatedLibraryVariableSet = Invoke-RestMethod -Uri "$octopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Method Put -Headers $header -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)
