@@ -258,5 +258,29 @@
       "Type": "String",
       "IsSensitive": false
     }
-  ]
+  ],
+  "ScopeValues": {
+    "Environments": [
+      {
+        "Id": "Environments-1",
+        "Name": "Development"
+      },
+      {
+        "Id": "Environments-2",
+        "Name": "Staging"
+      },
+      {
+        "Id": "Environments-3",
+        "Name": "Production"
+      },
+      {
+        "Id": "Environments-4",
+        "Name": "Test"
+      },
+      {
+        "Id": "Environments-5",
+        "Name": "QA"
+      }
+    ]
+  }
 }

@@ -220,8 +220,8 @@ try {
         }  
     }
     Write-Host "Saving variables to $octopusURL$($LibraryvariableSet.Links.Variables)"       
-    #Invoke-RestMethod -Method Put -Uri "$octopusURL$($LibraryvariableSet.Links.Variables)" -Body ($destinationVariableSetVariables | ConvertTo-Json -Depth 10) -Headers $header | Out-Null
-    Invoke-RestMethod -Method Put -Uri "$OctopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Body ($destinationVariableSetVariables | ConvertTo-Json -Depth 10) -Headers $header | Out-Null
+    Invoke-RestMethod -Method Put -Uri "$octopusURL$($LibraryvariableSet.Links.Variables)" -Body ($destinationVariableSetVariables | ConvertTo-Json -Depth 10) -Headers $header | Out-Null
+    
 }
 catch {
     Write-Host $_.Exception.Message
