@@ -40,12 +40,12 @@ foreach ($variable in $jsonVariables) {
     for($i=0; $i -lt $LibraryVariableSetVariables.Variables.Length; $i++) {
         $existingVariable = $LibraryVariableSetVariables.Variables[$i];
         if($existingVariable.Name -eq $VariableName) {
-            Write-Host "Found existing variable"
+            Write-Host "Found existing variable $VariableName"
             if($existingVariable.Value -eq $VariableValue){
                 Write-Host "Value of variable '$variableName' is already up to date."
             }
             else {
-                Write-Host "updating its value $existingVariable.Name"
+                Write-Host "updating its value $($existingVariable.Name)"
                 $existingVariable.Value = $VariableValue
             }
             continue
@@ -59,9 +59,9 @@ foreach ($variable in $jsonVariables) {
         Value = $variableValue
     }
 
-    $LibraryVariableSetVariables.Variables += $newVariable
+    $existingVariable.Variables += $newVariable
     Write-Host "Added new variable '$variableName' to the '$libraryVariableSetName'."
 }
 
 # Update the Octopus library variable set with any new variables
-$UpdatedLibraryVariableSet = Invoke-RestMethod -Uri "$octopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Method Put -Headers $header -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)
+$UpdatedLibraryVariableSet = Invoke-RestMethod -Uri "$octopusURL/api/$($Space.Id)/variables/$($LibraryVariableSetVariables.Id)" -Method Put -Headers @{ "X-Octopus-ApiKey" = $octopusAPIKey; "Content-Type" = "application/json" } -Body ($LibraryVariableSetVariables | ConvertTo-Json -Depth 10)

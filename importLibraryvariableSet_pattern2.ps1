@@ -153,7 +153,7 @@ $destinationEnvironmentList = Invoke-RestMethod -Method Get -Uri "$octopusURL/ap
 $variableTracker = @{}
 
 try {
-    foreach ($octopusVariable in $sourceVariableSetVariables) {
+    foreach ($octopusVariable in $sourceVariableSetVariables.Variables) {
         $variableName = $octopusVariable.Name
 
         if (Get-Member -InputObject $octopusVariable.Scope -Name "Environment" -MemberType Properties) {

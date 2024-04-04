@@ -1,4 +1,5 @@
-[
+{
+"Variables": [
   {
     "Id": "1d425712-b903-b48c-021e-8d90f4db875a",
     "Name": "Name2",
@@ -258,3 +259,4 @@
     "IsSensitive": false
   }
 ]
+}
