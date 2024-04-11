@@ -11,7 +11,7 @@ variable "Var2" {
         environment = ["test"]
     }
 
-    value "val2.2" {
+    value "puru" {
         environment = ["qa"]
     }
 
