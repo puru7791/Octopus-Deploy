@@ -29,7 +29,7 @@ jobs:
       run: |
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:
-        #./exportProjectVariable_Pattern1.ps1
+        ./exportProjectVariable_Pattern1.ps1
         #./exportVariableSetToJson.ps1
     - name: Commit report
       env:
