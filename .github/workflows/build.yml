@@ -43,27 +43,27 @@ jobs:
     #     git add -A
     #     git commit -m "Auto-generated: Extracted Octopus project variables"
     #     git push origin "${GITHUB_REF:11}"
-    # - name: Import variable to the Project
-    #   shell: pwsh
-    #   env: 
-    #     destProjectName: Demo1
-    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
-    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-    #     ProjectName: FirstProject
-    #     SpaceName: Default
-    #     variableSetFilePath: exportedVariableSet.json
-    #   run: |
-    #     ./ImportVariablesFromFile.ps1
-    - name: Import variables to variableset
+    - name: Import variable to the Project
       shell: pwsh
       env: 
+        destProjectName: Demo1
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        ProjectName: FirstProject
         SpaceName: Default
-        variableSetjsonFilePath: exportedVariableSet-1.json
-        libraryVariableSetName: AppSettings
-      run: | 
-        ./importLibraryvariableSet_pattern2.ps1
+        variableSetFilePath: exportedVariableSet-1.json
+      run: |
+        ./ImportVariablesFromFile.ps1
+    # - name: Import variables to variableset
+    #   shell: pwsh
+    #   env: 
+    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    #     SpaceName: Default
+    #     variableSetjsonFilePath: exportedVariableSet-1.json
+    #     libraryVariableSetName: AppSettings
+    #   run: | 
+    #     ./importLibraryvariableSet_pattern2.ps1
 
     - name: Clear Workspace
       if: always()
