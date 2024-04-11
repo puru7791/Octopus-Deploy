@@ -1,5 +1,5 @@
-variable "Var1" {
-    value "value1" {}
+variable "API_NAME" {
+    value "m-project-api" {}
 }
 
 variable "Var2" {
