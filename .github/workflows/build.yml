@@ -49,7 +49,6 @@ jobs:
         destProjectName: Demo1
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-        ProjectName: FirstProject
         SpaceName: Default
         variableSetFilePath: exportedVariableSet-1.json
       run: |
