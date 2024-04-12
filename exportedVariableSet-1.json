@@ -25,7 +25,7 @@
   {
     "Id": "92a0cfa6-f235-d604-2989-f5228e488fe8",
     "Name": "AppSettings.var1",
-    "Value": {"$ref:exportedVariableSet.json#/Variables/{Id=92a0cfa6-f235-d604-2989-f5228e488fe8}/Value"},
+    "Value": {"Id"="92a0cfa6-f235-d604-2989-f5228e488fe8", "$ref:exportedVariableSet.json#/Variables/Value"},
     "Description": null,
     "Scope": {
       "Environment": [
