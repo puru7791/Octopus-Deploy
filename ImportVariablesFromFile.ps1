@@ -11,6 +11,7 @@ $variableSetFilePaths = @("$env:variableSetFilePath1", "$env:variableSetFilePath
 #$variableSetFilePath = "$env:variableSetFilePath"
 $destinationProjectName = "$env:destProjectName"
 
+
 # Set this value to add additional variable values found on source data not in destination
 $addAdditionalVariableValuesOnExistingVariableSets = $True
 # Set this value to to true to overwrite existing variable values
@@ -124,7 +125,11 @@ $destinationProject = $projectList | Where-Object { $_.Name -eq $destinationProj
 $destinationProjectVariableSetId = $destinationProject.VariableSetId
 
 # Get source variableset from file
-$sourceVariableSetVariables = [IO.File]::ReadAllText($variableSetFilePath) | ConvertFrom-Json
+$sourceVariableSetVariables = @()
+foreach ($filePath in $variableSetFilePaths) {
+    $sourceVariableSetVariables += (Get-Content $filePath | ConvertFrom-Json)
+}
+#$sourceVariableSetVariables = [IO.File]::ReadAllText($variableSetFilePath) | ConvertFrom-Json
 $sourceEnvironmentList = $sourceVariableSetVariables.ScopeValues.Environments
 $sourceChannelList = $sourceVariableSetVariables.ScopeValues.Channels
 $sourceRunbookList = $sourceVariableSetVariables.ScopeValues.Processes | Where-Object { $_.ProcessType -eq "Runbook" }
