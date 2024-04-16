@@ -6,7 +6,9 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 # Define working variables
 #$spaceName = "Default"
 $spaceName = "$env:SpaceName"
-$variableSetFilePath = "$env:variableSetFilePath"
+#### To pass multiple json files to import variables
+$variableSetFilePaths = @("$env:variableSetFilePath1", "$env:variableSetFilePath2")
+#$variableSetFilePath = "$env:variableSetFilePath"
 $destinationProjectName = "$env:destProjectName"
 
 # Set this value to add additional variable values found on source data not in destination

@@ -50,7 +50,8 @@ jobs:
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
-        variableSetFilePath: exportedVariableSet-1.json
+        variableSetFilePath1: exportedVariableSet-1.json
+        variableSetFilePath2: demo-variables.json
       run: |
         ./ImportVariablesFromFile.ps1
     # - name: Import variables to variableset

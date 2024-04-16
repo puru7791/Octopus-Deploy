@@ -2,6 +2,10 @@ variable "API_NAME" {
     value "m-project-api" {}
 }
 
+###############################################
+#Below are the global variables
+#
+###############################################
 variable "Var2" {
     value "val2" {
         environment = ["development"]
