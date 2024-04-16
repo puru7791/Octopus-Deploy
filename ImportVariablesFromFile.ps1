@@ -127,7 +127,7 @@ $destinationProjectVariableSetId = $destinationProject.VariableSetId
 # Get source variableset from file
 $sourceVariableSetVariables = @()
 foreach ($filePath in $variableSetFilePaths) {
-    $sourceVariableSetVariables += (Get-Content $filePath | ConvertFrom-Json)
+    $sourceVariableSetVariables += [IO.File]::ReadAllText($variableSetFilePath) | ConvertFrom-Json
 }
 #$sourceVariableSetVariables = [IO.File]::ReadAllText($variableSetFilePath) | ConvertFrom-Json
 $sourceEnvironmentList = $sourceVariableSetVariables.ScopeValues.Environments
