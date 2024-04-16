@@ -7,8 +7,8 @@ $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 #$spaceName = "Default"
 $spaceName = "$env:SpaceName"
 #### To pass multiple json files to import variables
-$variableSetFilePaths = @("$env:variableSetFilePath1", "$env:variableSetFilePath2")
-#$variableSetFilePath = "$env:variableSetFilePath"
+#$variableSetFilePaths = @("$env:variableSetFilePath1", "$env:variableSetFilePath2")
+$variableSetFilePath = "$env:variableSetFilePath"
 $destinationProjectName = "$env:destProjectName"
 
 
@@ -125,11 +125,11 @@ $destinationProject = $projectList | Where-Object { $_.Name -eq $destinationProj
 $destinationProjectVariableSetId = $destinationProject.VariableSetId
 
 # Get source variableset from file
-$sourceVariableSetVariables = @()
-foreach ($filePath in $variableSetFilePaths) {
-    $sourceVariableSetVariables += [IO.File]::ReadAllText($filePath) | ConvertFrom-Json
-}
-#$sourceVariableSetVariables = [IO.File]::ReadAllText($variableSetFilePath) | ConvertFrom-Json
+# $sourceVariableSetVariables = @()
+# foreach ($filePath in $variableSetFilePaths) {
+#     $sourceVariableSetVariables += [IO.File]::ReadAllText($filePath) | ConvertFrom-Json
+# }
+$sourceVariableSetVariables = [IO.File]::ReadAllText($variableSetFilePath) | ConvertFrom-Json
 $sourceEnvironmentList = $sourceVariableSetVariables.ScopeValues.Environments
 $sourceChannelList = $sourceVariableSetVariables.ScopeValues.Channels
 $sourceRunbookList = $sourceVariableSetVariables.ScopeValues.Processes | Where-Object { $_.ProcessType -eq "Runbook" }
