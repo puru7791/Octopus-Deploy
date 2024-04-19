@@ -46,7 +46,8 @@ jobs:
           git commit -m "Auto-generated: Added extracted Octopus variables file"
           git push origin "${GITHUB_REF:11}"
         else
-          echo "Your branch is up to date with 'origin/main'.";
+          echo "Your branch is up to date with '${GITHUB_REF:11}'.";
+          echo "${GITHUB_REPOSITORY}";
         fi
 
     #  - name: Commit report
