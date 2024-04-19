@@ -33,6 +33,7 @@ jobs:
         ./exportVariableSetToJson.ps1
     - name: Check for changes
       id: check_changes
+      shell: pwsh
       run: |
         $gitStatus = git status
         if ($gitStatus -match "nothing to commit") {
