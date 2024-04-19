@@ -34,14 +34,16 @@ jobs:
     - name: Check for changes
       id: check_changes
       run: |
-        if git diff-index --quiet HEAD --; then
-          echo "No changes to commit. Exiting..."
+        $gitStatus = git status
+        if ($gitStatus -match "nothing to commit") {
+          Write-Output "No changes to commit. Exiting..."
           exit 0
-        else
-          echo "Changes detected. Proceeding with commit..."
-        fi
+        }
+        else {
+          Write-Output "Changes detected. Proceeding with commit..."
+        }
     - name: Commit report
-      if: steps.check_changes.outcome == 'success' 
+      if: steps.check_changes.outcome != 'success'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
@@ -53,7 +55,7 @@ jobs:
         git add -A
         git commit -m "Auto-generated: Added extracted Octopus variables file"
         git push origin "${GITHUB_REF:11}"
-    # - name: Import variable to the Project
+    ## - name: Import variable to the Project
     #   shell: pwsh
     #   env: 
     #     destProjectName: Demo1
