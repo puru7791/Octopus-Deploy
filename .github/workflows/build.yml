@@ -33,15 +33,9 @@ jobs:
         ./exportVariableSetToJson.ps1
     - name: Check for changes
       id: check_changes
-      shell: pwsh
       run: |
-        $gitStatus = git status
-        if ($gitStatus -match "nothing to commit") {
-          Write-Output "No changes to commit. Exiting..."
-          exit 0
-        }
-        else {
-          Write-Output "Changes detected. Proceeding with commit..."
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "there are new changes";
           git config --global user.name 'Github Action'
           git config --global user.email 'puru7791@users.noreply.github.com'
           git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
@@ -50,12 +44,15 @@ jobs:
           git add -A
           git commit -m "Auto-generated: Added extracted Octopus variables file"
           git push origin "${GITHUB_REF:11}"
-        }
-    # - name: Commit report
-    #   if: steps.check_changes.outcome ! = 'success'
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   run: |
+        else
+          echo "Your branch is up to date with 'origin/main'.";
+        fi
+
+    #  - name: Commit report
+    #    if: steps.check_changes.outcome ! = 'success'
+    #    env:
+    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    run: |
     #     git config --global user.name 'Github Action'
     #     git config --global user.email 'puru7791@users.noreply.github.com'
     #     git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
