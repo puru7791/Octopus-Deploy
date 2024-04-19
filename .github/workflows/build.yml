@@ -41,7 +41,7 @@ jobs:
           echo "Changes detected. Proceeding with commit..."
         fi
     - name: Commit report
-      if: steps.check_changes.outcome != 'success'
+      if: ${{ steps.check_changes.outcome == 'success' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
