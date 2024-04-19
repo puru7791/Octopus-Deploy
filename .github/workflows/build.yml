@@ -34,7 +34,6 @@ jobs:
     - name: Check for changes
       id: check_changes
       run: |
-        cd lib
         if git diff --exit-code; then
           echo "No changes to commit. Exiting..."
           exit 0
