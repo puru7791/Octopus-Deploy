@@ -34,14 +34,14 @@ jobs:
     - name: Check for changes
       id: check_changes
       run: |
-        if git diff --exit-code; then
+        if git diff-index --quiet HEAD --; then
           echo "No changes to commit. Exiting..."
           exit 0
         else
           echo "Changes detected. Proceeding with commit..."
         fi
     - name: Commit report
-      if: ${{ steps.check_changes.outcome == 'success' }}
+      if: steps.check_changes.outcome == 'success' 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
