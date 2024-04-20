@@ -5,10 +5,9 @@ $OctopusURL = "$env:OCTOPUS_SERVER_URL"   #Octopus URL
 
 $variableSetName = "$env:variableSetName" #Name of the variable set
 
-$outputFilePath = "$env:exportedVariablesSet"
-
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
-
+$dir = New-Item -Name $variableSetName -ItemType "directory" -Path . 
+$outputFilePath = "$dir/$env:exportedVariablesSet-vars.json"
 ##Process
 $VariableSet = (Invoke-WebRequest "$OctopusURL/api/libraryvariablesets?contentType=Variables" -Headers $header).content | ConvertFrom-Json | select -ExpandProperty Items | ?{$_.name -eq $variableSetName}
 
