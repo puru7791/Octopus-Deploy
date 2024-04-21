@@ -7,7 +7,7 @@ $variableSetName = "$env:variableSetName" #Name of the variable set
 
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
 if (!(Test-Path -Path "./$variableSetName" -PathType Container)) {
-    $dir = New-Item -Path "$variableSetName" -ItemType "directory"
+    $dir = New-Item -Path "./$variableSetName" -ItemType "directory"
 }
 else {
     Write-Host "$variableSetName directory already exists, proceeding..."
