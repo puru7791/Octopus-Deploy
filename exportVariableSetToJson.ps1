@@ -6,7 +6,12 @@ $OctopusURL = "$env:OCTOPUS_SERVER_URL"   #Octopus URL
 $variableSetName = "$env:variableSetName" #Name of the variable set
 
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
-$dir = New-Item -Name $variableSetName -ItemType "directory" -Path . 
+if (!(Test-Path -Path "./$variableSetName" -PathType Container)) {
+    $dir = New-Item -Path "$variableSetName" -ItemType "directory"
+}
+else {
+    Write-Host "$variableSetName directory already exists, proceeding..."
+} 
 $outputFilePath = "$dir/$env:variableSetName-vars.json"
 ##Process
 $VariableSet = (Invoke-WebRequest "$OctopusURL/api/libraryvariablesets?contentType=Variables" -Headers $header).content | ConvertFrom-Json | select -ExpandProperty Items | ?{$_.name -eq $variableSetName}
