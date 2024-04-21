@@ -23,13 +23,13 @@ jobs:
     - name: Run PowerShell script
       shell: pwsh
       env:
-        OCTOPUS_SERVER_URL: ${{ inputs.octopus_url }}
+        OCTOPUS_SERVER_URL: ${{ github.event.inputs.octopus_url }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         #ProjectName: FirstProject
         #SpaceName: Default
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         outputVariableName: exportedVariables.json
-        variableSetName: ${{ inputs.VariableSetName }}
+        variableSetName: ${{ github.event.inputs.VariableSetName }}
         #exportedVariablesSet: exportedVariableSet-3
       run: |
         # This is where you put your PowerShell script content
@@ -53,7 +53,6 @@ jobs:
           git push origin GH-Auto
         else
           echo "Your branch is up to date with '${GITHUB_REF:11}'.";
-          echo "${GITHUB_REPOSITORY}";
         fi
 
     #  - name: Commit report
