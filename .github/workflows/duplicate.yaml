@@ -1,0 +1,114 @@
+name: Run PowerShell Script
+on:
+  # push:
+  #   branches: 
+  #     - main
+  workflow_dispatch:
+    inputs: 
+      VariableSetName: 
+        type: string
+        required: true
+        description: 'Octopus VariableSet Name'
+      octopus_url:
+        type: string
+        #default: ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run PowerShell script
+      shell: pwsh
+      env:
+        OCTOPUS_SERVER_URL: ${{ github.event.inputs.octopus_url }}
+        OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        outputVariableName: exportedVariables.json
+        variableSetName: ${{ github.event.inputs.VariableSetName }}
+        #exportedVariablesSet: exportedVariableSet-3
+      run: |
+        ##Config
+        $OctopusAPIkey = "$env:OCTOPUS_API_KEY"   #Octopus API Key
+
+        $OctopusURL = "$env:OCTOPUS_SERVER_URL"   #Octopus URL
+
+        $variableSetName = "$env:variableSetName" #Name of the variable set
+
+        $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+        if (!(Test-Path -Path "$variableSetName" -PathType Container)) {
+            $dir = New-Item -Path "$variableSetName" -ItemType "directory"
+        }
+        else {
+            Write-Host "$variableSetName directory already exists, proceeding..."
+        } 
+        $outputFilePath = "$dir/$variableSetName-vars.json"
+        ##Process
+        $VariableSet = (Invoke-WebRequest "$OctopusURL/api/libraryvariablesets?contentType=Variables" -Headers $header).content | ConvertFrom-Json | select -ExpandProperty Items | ?{$_.name -eq $variableSetName}
+
+        $variables = (Invoke-WebRequest "$OctopusURL/$($VariableSet.Links.Variables)" -Headers $header).content | ConvertFrom-Json | select -ExpandProperty Variables
+
+        $variables | ConvertTo-Json -Depth 10 | Out-File -FilePath $outputFilePath    #<--- Collection of variables of the variable set
+
+        Write-Host "Variables data of $variableSetName has been exported and saved to $outputFilePath"
+
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "there are new changes";
+          git config --global user.name 'Github Action'
+          git config --global user.email 'puru7791@users.noreply.github.com'
+          #git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
+          git remote set-url origin https://${{ secrets.REPO_TOKEN }}@github.com/${GITHUB_REPOSITORY}.GIT
+          #git checkout "${GITHUB_REF:11}"
+          git checkout -b "GH-Auto"
+          git add -A
+          git commit -m "Auto-generated: Added extracted Octopus variables file"
+          #git push origin "${GITHUB_REF:11}"
+          git push origin GH-Auto
+        else
+          echo "Your branch is up to date.";
+        fi
+
+    #  - name: Commit report
+    #    if: steps.check_changes.outcome ! = 'success'
+    #    env:
+    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    run: |
+    #     git config --global user.name 'Github Action'
+    #     git config --global user.email 'puru7791@users.noreply.github.com'
+    #     git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
+    #     #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+    #     git checkout "${GITHUB_REF:11}"
+    #     git add -A
+    #     git commit -m "Auto-generated: Added extracted Octopus variables file"
+    #     git push origin "${GITHUB_REF:11}"
+    ## - name: Import variable to the Project
+    #   shell: pwsh
+    #   env: 
+    #     destProjectName: Demo1
+    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    #     SpaceName: Default
+    #     variableSetFilePath: exportedVariableSet-1.json
+    #   run: |
+    #     ./ImportVariablesFromFile.ps1
+    # - name: Import variables to variableset
+    #   shell: pwsh
+    #   env: 
+    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    #     SpaceName: Default
+    #     variableSetjsonFilePath: exportedVariableSet-1.json
+    #     libraryVariableSetName: AppSettings
+    #   run: | 
+    ##    ./importLibraryvariableSet_pattern2.ps1
+
+    - name: Clear Workspace
+      if: always()
+      run: |
+        ls -la ./
+        rm -rf $GITHUB_WORKSPACE/*
