@@ -1,7 +1,4 @@
 {
-  "Id": "variableset-Projects-1",
-  "OwnerId": "Projects-1",
-  "Version": 2,
   "Variables": [
     {
       "Name": "ENV",
@@ -70,6 +67,16 @@
       "IsSensitive": false
     },
     {
+      "Name": "profiles:Octopus.Trident.Database.DbUp:commandName",
+      "Value": "DUMMY_VALUE",
+      "Description": null,
+      "Scope": {},
+      "IsEditable": true,
+      "Prompt": null,
+      "Type": "String",
+      "IsSensitive": false
+    },
+    {
       "Name": "ApplicationID",
       "Value": "111222",
       "Description": null,
@@ -90,8 +97,9 @@
       "IsSensitive": false
     },
     {
-      "Name": "profiles:Octopus.Trident.Database.DbUp:commandName",
-      "Value": "NewValue",
+      "Id": "887368c2-e464-de3c-eaf8-ef962b84fd7f",
+      "Name": "Name",
+      "Value": "puru-from-github",
       "Description": null,
       "Scope": {},
       "IsEditable": true,
@@ -122,32 +130,6 @@
         "Id": "Environments-1",
         "Name": "Production"
       }
-    ],
-    "Machines": [],
-    "Actions": [
-      {
-        "Id": "274001c1-c66a-42f3-9348-38f9b954864e",
-        "Name": "1. Hello world (using PowerShell)"
-      }
-    ],
-    "Roles": [],
-    "Channels": [
-      {
-        "Id": "Channels-1",
-        "Name": "Default"
-      }
-    ],
-    "TenantTags": [],
-    "Processes": [
-      {
-        "ProcessType": "Deployment",
-        "Id": "Projects-1",
-        "Name": "Deployment Process"
-      }
     ]
-  },
-  "SpaceId": "Spaces-1",
-  "Links": {
-    "Self": "/api/Spaces-1/projects/Projects-1/variables"
   }
 }

@@ -53,27 +53,53 @@ jobs:
         $variables | ConvertTo-Json -Depth 10 | Out-File -FilePath $outputFilePath    #<--- Collection of variables of the variable set
 
         Write-Host "Variables data of $variableSetName has been exported and saved to $outputFilePath"
-
-    - name: Check for changes
-      id: check_changes
+    - name:
+      uses: puru7791/Octopus-Deploy/.github/workflows/python.yaml@main
+      with:
+        source_data: ./source_data
+        dest_json: demo-variables.json
+    - name: Get the changes in the target file
       run: |
-        if [ -n "$(git status --porcelain)" ]; then
-          echo "there are new changes";
-          git config --global user.name 'Github Action'
-          git config --global user.email 'puru7791@users.noreply.github.com' 
-          #git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
-          git remote set-url origin https://${{ secrets.REPO_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
-          git pull orgin GH-Auto
-          #git checkout "${GITHUB_REF:11}"
-          git checkout -b "GH-Auto"
-          git add -A
-          git commit -m "Auto-generated: Added extracted Octopus variables file"
-          #git push origin "${GITHUB_REF:11}"
-          git push origin GH-Auto
-        else
-          echo "Your branch is up to date.";
+        git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
+        TARGET_FILE="${{ github.event.inputs.VariableSetName }}/${{ github.event.inputs.VariableSetName }}-vars.json"
+        if grep -q "$TARGET_FILE" changed_files.txt; then
+          git diff ${{ github.event.before }} ${{ github.sha }} -- $TARGET_FILE > changes.diff
         fi
 
+    - name: Send email for approval
+      run: |
+        if [ -f "changes.diff" ]; then
+          git send-email \
+            --to=approver@example.com \
+            --from=sender@example.com \
+            --subject="Approval for changes in $TARGET_FILE" \
+            --annotate \
+            --confirm=auto \
+            --smtp-server=smtp.example.com \
+            changes.diff
+        fi
+
+
+    # - name: Check for changes
+    #   id: check_changes
+    #   run: |
+    #     if [ -n "$(git status --porcelain)" ]; then
+    #       echo "there are new changes";
+    #       git config --global user.name 'Github Action'
+    #       git config --global user.email 'puru7791@users.noreply.github.com' 
+    #       #git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
+    #       git remote set-url origin https://${{ secrets.REPO_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git
+    #       git pull orgin GH-Auto
+    #       #git checkout "${GITHUB_REF:11}"
+    #       git checkout -b "GH-Auto"
+    #       git add -A
+    #       git commit -m "Auto-generated: Added extracted Octopus variables file"
+    #       #git push origin "${GITHUB_REF:11}"
+    #       git push origin GH-Auto
+    #     else
+    #       echo "Your branch is up to date.";
+    #     fi
+      #### Commit Report ####
     #  - name: Commit report
     #    if: steps.check_changes.outcome ! = 'success'
     #    env:
@@ -87,6 +113,9 @@ jobs:
     #     git add -A
     #     git commit -m "Auto-generated: Added extracted Octopus variables file"
     #     git push origin "${GITHUB_REF:11}"
+          ####################
+          ## Import job ###
+          ####################
     ## - name: Import variable to the Project
     #   shell: pwsh
     #   env: 
