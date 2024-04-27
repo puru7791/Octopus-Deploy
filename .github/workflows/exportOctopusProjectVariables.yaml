@@ -27,9 +27,9 @@ jobs:
       env:
         OCTOPUS_SERVER_URL: ${{ inputs.octopus_url }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-        #ProjectName: ${{ inputs.ProjectName }}
+        ProjectName: ${{ inputs.ProjectName }}
         #GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        variableSetName: ${{ github.event.inputs.VariableSetName }}
+        #variableSetName: ${{ github.event.inputs.VariableSetName }}
       run: |
         # This is where you put your PowerShell script content
         # For example, you can run a specific PowerShell script file:

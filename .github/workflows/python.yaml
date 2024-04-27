@@ -49,7 +49,7 @@ jobs:
                 json.dump(dest_data, f, indent=2)
 
         # Read source data from file
-        with open("${{ inputs.   }}", 'r') as f:
+        with open("${{ inputs.source_data }}", 'r') as f:
             lines = f.readlines()
 
         # Process each line in source data
