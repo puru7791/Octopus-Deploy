@@ -4,14 +4,6 @@ on:
   #   branches: 
   #     - main
   workflow_dispatch:
-    inputs: 
-      VariableSetName: 
-        type: string
-        required: true
-        description: 'Octopus VariableSet Name'
-      octopus_url:
-        type: string
-        #default: ""
 jobs:
   build:
     runs-on: ubuntu-latest
