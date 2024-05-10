@@ -1,0 +1,50 @@
+name: Run PowerShell Script
+on:
+  # push:
+  #   branches: 
+  #     - main
+  workflow_dispatch:
+    inputs: 
+      VariableSetName: 
+        type: string
+        required: true
+        description: 'Octopus VariableSet Name'
+      octopus_url:
+        type: string
+        #default: ""
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    #  - name: Commit report
+    #    if: steps.check_changes.outcome ! = 'success'
+    #    env:
+    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    run: |
+    #     git config --global user.name 'Github Action'
+    #     git config --global user.email 'puru7791@users.noreply.github.com'
+    #     git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
+    #     #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+    #     git checkout "${GITHUB_REF:11}"
+    #     git add -A
+    #     git commit -m "Auto-generated: Added extracted Octopus variables file"
+    #     git push origin "${GITHUB_REF:11}"
+    - name: Import variable to the Project
+      shell: pwsh
+      env: 
+        destProjectName: First-project
+        OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+        OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        SpaceName: Default
+        variableSetFilePath: exportedVariableSet-1.json
+      run: |
+        ./ImportVariablesFromFile.ps1
+    - name: Clear Workspace
+      if: always()
+      run: |
+        ls -la ./
+        rm -rf $GITHUB_WORKSPACE/*
