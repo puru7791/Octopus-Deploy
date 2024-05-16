@@ -36,9 +36,9 @@ jobs:
       run: |
         function Set-OctopusVariables {
             param(
-                $octopusURL = "${{ secrets.OCTOPUS_SERVER_URL }}", # Octopus Server URL
-                $octopusAPIKey = "${{ secrets.OCTOPUS_API_KEY }}",               # API key goes here
-                $projectName = "First-project",                        # Replace with your project name
+                $octopusURL = "", # Octopus Server URL
+                $octopusAPIKey = "",               # API key goes here
+                $projectName = "",                        # Replace with your project name
                 $spaceName = "Default",                   # Replace with the name of the space you are working in
                 $variablesFilePath = "$env:variableSetFilePath", # Path to JSON file containing variables
                 $gitRefOrBranchName = $null               # Set this value if you are storing a plain-text variable and the project is version controlled. If no value is set, the default branch will be used.
@@ -70,9 +70,8 @@ jobs:
             $scopeValues = $variablesData.ScopeValues.Environments
         
             foreach ($variable in $variables) {
-                # Define values for variable
-                $scopeIds = @()
                 $scopeNames = @()
+                $scopeIds = @()
         
                 if ($variable.Scope.Environment) {
                     foreach ($scopeId in $variable.Scope.Environment) {
@@ -101,18 +100,9 @@ jobs:
                     # Check to see if variable is already present. If so, removing old version(s).
                     $variablesWithSameName = $projectVariables.Variables | Where-Object {$_.Name -eq $variableObject.Name}
         
-                    if ($scopeIds.Count -eq 0){
-                        # The variable is not scoped to an environment
-                        $unscopedVariablesWithSameName = $variablesWithSameName | Where-Object { $_.Scope -eq $null}
-                        $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -notin @($unscopedVariablesWithSameName.id)}
-                    } else {
-                        foreach ($scopeId in $scopeIds) {
-                            if (@($variablesWithSameName.Scope.Environment) -contains $scopeId){
-                                # At least one of the existing variables with the same name is scoped to the same environment, removing all matches
-                                $variablesWithMatchingNameAndScope = $variablesWithSameName | Where-Object { $_.Scope.Environment -contains $scopeId }
-                                $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -notin @($variablesWithMatchingNameAndScope.id)}
-                            }
-                        }
+                    if ($variablesWithSameName.Scope.Environment -eq $variableObject.Scope.Environment){
+                        # The existing variable with the same name is scoped to the same environment, removing it
+                        $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -ne $variablesWithSameName.id }
                     }
         
                     # Adding the new value
@@ -120,7 +110,7 @@ jobs:
                 }
             }
         
-            # Update the collectio
+            # Update the collection
             if($project.IsVersionControlled -eq $True -and $variableObject.IsSensitive -eq $False) {
                 Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/$($gitRefOrBranchName)/variables" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)    
             }
@@ -128,7 +118,8 @@ jobs:
                 Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
             }
         }
-
+        
         Set-OctopusVariables -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "First-project" -variablesFilePath "$env:variableSetFilePath" -gitRefOrBranchName $null
+    
        
     
