@@ -1,7 +1,7 @@
 # Define octopus variables
 $octopusURL = "$env:OCTOPUS_SERVER_URL"
 $octopusAPIKey = "$env:OCTOPUS_API_KEY"
-$header = @{ "Content-Type" = "application/json" "X-Octopus-ApiKey" = $octopusAPIKey }
+$header = @{ "Content-Type" = "application/json"; "X-Octopus-ApiKey" = $octopusAPIKey }
 
 # Define working variables
 #$spaceName = "Default"
