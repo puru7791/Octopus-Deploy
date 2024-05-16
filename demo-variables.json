@@ -3,17 +3,10 @@
     {
       "Name": "ENV",
       "Value": "DEV",
-      "Description": null,
-      "Scope": {
-        "Environment": [
+      "Environment": [
           "Environments-2"
         ]
       },
-      "IsEditable": true,
-      "Prompt": null,
-      "Type": "String",
-      "IsSensitive": false
-    },
     {
       "Name": "ENV",
       "Value": "REVIEW",
@@ -97,7 +90,6 @@
       "IsSensitive": false
     },
     {
-      "Id": "887368c2-e464-de3c-eaf8-ef962b84fd7f",
       "Name": "Name",
       "Value": "puru-from-github",
       "Description": null,
