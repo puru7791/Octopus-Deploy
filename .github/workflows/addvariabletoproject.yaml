@@ -121,19 +121,5 @@ jobs:
             }
         
             # Update the collection
-            if($project.IsVersionControlled -eq $True -and $variableObject.IsSensitive -eq $False) {
-                Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/$($gitRefOrBranchName)/variables" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)    
-            }
-            else {
-                Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
-            }
-        }
-        
-        Set-OctopusVariables -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "First-project" -variablesFilePath "$env:variableSetFilePath" -gitRefOrBranchName $null
+       
     
-    
-    - name: Clear Workspace
-      if: always()
-      run: |
-        ls -la ./
-        rm -rf $GITHUB_WORKSPACE/*
