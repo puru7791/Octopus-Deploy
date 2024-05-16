@@ -32,7 +32,7 @@ jobs:
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
-        variableSetFilePath: exportedVariableSet-1.json
+        variableSetFilePath: exportedVariableSet-2.json
       run: |
         ./ImportVariablesFromFile.ps1
     - name: Clear Workspace
