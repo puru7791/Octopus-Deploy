@@ -35,8 +35,8 @@ jobs:
         variableSetFilePath: exportedVariableSet-2.json
       run: |
         ./ImportVariablesFromFile.ps1
-    - name: Clear Workspace
-      if: always()
-      run: |
-        ls -la ./
-        rm -rf $GITHUB_WORKSPACE/*
+   # - name: Clear Workspace
+   #   if: always()
+   #   run: |
+   #     ls -la ./
+   #     rm -rf $GITHUB_WORKSPACE/*
