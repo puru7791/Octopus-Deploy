@@ -28,7 +28,7 @@ jobs:
     - name: Import variable to the Project
       shell: pwsh
       env: 
-        destProjectName: First-project
+        destProjectName: second-project
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
