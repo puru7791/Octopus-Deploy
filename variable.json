@@ -16,6 +16,21 @@
                 "Staging",
                 "Test"
             ]
+        },
+        {
+            "Name": "name1",
+            "Value": "Development",
+            "Environment": [
+                "Development"
+            ]
+        },
+        {
+            "Name": "name2",
+            "Value": "Prod",
+            "Environment": [
+                "Production"
+                
+            ]
         }
     ]
 }
