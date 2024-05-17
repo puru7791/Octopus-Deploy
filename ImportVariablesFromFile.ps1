@@ -2,6 +2,7 @@
 $octopusURL = "$env:OCTOPUS_SERVER_URL"
 $octopusAPIKey = "$env:OCTOPUS_API_KEY"
 $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+$header.Add("Content-Type","application/json")
 
 # Define working variables
 #$spaceName = "Default"

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout code
@@ -28,15 +28,15 @@ jobs:
     - name: Import variable to the Project
       shell: pwsh
       env: 
-        destProjectName: First-project
+        destProjectName: second-project
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
-        variableSetFilePath: exportedVariableSet-2.json
+        variableSetFilePath: exportedVariableSet-1.json
       run: |
         ./ImportVariablesFromFile.ps1
-    - name: Clear Workspace
-      if: always()
-      run: |
-        ls -la ./
-        rm -rf $GITHUB_WORKSPACE/*
+   # - name: Clear Workspace
+   #   if: always()
+   #   run: |
+   #     ls -la ./
+   #     rm -rf $GITHUB_WORKSPACE/*
