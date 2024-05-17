@@ -1,0 +1,18 @@
+{
+    "Variables": [
+        {
+            "Name": "name1",
+            "Value": "value1",
+            "Environment": [
+                "Production",
+                "Test",
+                "QA"
+            ]
+        },
+        {
+            "Name": "name2",
+            "Value": "value2",
+            "Environment": "Staging"
+        }
+    ]
+}

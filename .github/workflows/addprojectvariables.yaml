@@ -1,0 +1,112 @@
+name: Add project variables with multiple scoping
+on:
+  # push:
+  #   branches: 
+  #     - main
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Powreshell script to add project variables
+      shell: pwsh
+      run: | 
+        #Testcase-5
+        function Set-OctopusVariable {
+            param(
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName = "",                        # Replace with your project name
+                $spaceName = "Default",                   # Replace with the name of the space you are working in
+                $environments = @(),                      # Array of environment names
+                $varName = "",                            # Replace with the name of the variable
+                $varValue = ""                            # Replace with the value of the variable
+            )
+
+            # Defines header for API call
+            $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+
+            # Get space
+            $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
+
+            # Get project
+            $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object {$_.Name -eq $projectName}
+
+            # Get project variables
+            $projectVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
+
+            # Get environment IDs to scope to
+            $environmentIds = @()
+            foreach ($envName in $environments) {
+                $environmentObj = $projectVariables.ScopeValues.Environments | Where-Object { $_.Name -eq $envName } | Select-Object -First 1
+                if ($environmentObj -ne $null) {
+                    $environmentIds += $environmentObj.Id
+                }
+            }
+
+            # Define values for variable
+            $variable = @{
+                Name = $varName
+                Value = $varValue
+                Type = "String"
+                IsSensitive = $false
+                Scope = @{
+                    Environment = $environmentIds
+                }
+            }
+
+            # Check to see if variable is already present. If so, remove old version(s).
+            $variablesWithSameName = $projectVariables.Variables | Where-Object { $_.Name -eq $variable.Name }
+            if ($environmentIds.Count -eq 0) {
+                # The variable is not scoped to an environment
+                $unscopedVariablesWithSameName = $variablesWithSameName | Where-Object { $_.Scope -eq $null }
+                $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -notin @($unscopedVariablesWithSameName.id) }
+            } else {
+                # At least one of the existing variables with the same name is scoped to the same environments, removing all matches
+                $variablesWithMatchingNameAndScope = $variablesWithSameName | Where-Object { ($_?.Scope.Environment | Sort-Object) -join "," -eq ($variable.Scope.Environment | Sort-Object) -join "," }
+                $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -notin @($variablesWithMatchingNameAndScope.id) }
+            }
+
+            # Add the new value
+            $projectVariables.Variables += $variable
+
+            # Update the collection
+            Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
+        }
+
+        function Set-OctopusVariablesFromJson {
+            param(
+                $jsonFilePath,                            # Path to the JSON file
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName = "",                        # Replace with your project name
+                $spaceName = "Default"                    # Replace with the name of the space you are working in
+            )
+
+            # Read JSON file
+            $jsonContent = Get-Content -Path $jsonFilePath -Raw | ConvertFrom-Json
+
+            # Iterate through each variable in the JSON file
+            foreach ($variable in $jsonContent.Variables) {
+                $environments = @()
+                if ($variable.Environment -is [string]) {
+                    $environments += $variable.Environment
+                } elseif ($variable.Environment -is [array]) {
+                    $environments += $variable.Environment
+                }
+                
+                Set-OctopusVariable -octopusURL $octopusURL `
+                                    -octopusAPIKey $octopusAPIKey `
+                                    -projectName $projectName `
+                                    -spaceName $spaceName `
+                                    -environments $environments `
+                                    -varName $variable.Name `
+                                    -varValue $variable.Value
+            }
+        }
+
+        # Example call to the function
+        Set-OctopusVariablesFromJson -jsonFilePath "variable.json" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
