@@ -2,7 +2,7 @@
     "Variables": [
         {
             "Name": "name1",
-            "Value": "value1",
+            "Value": "puru1",
             "Environment": [
                 "Production",
                 "Test",
@@ -11,8 +11,11 @@
         },
         {
             "Name": "name2",
-            "Value": "value2",
-            "Environment": "Staging"
+            "Value": "puru2",
+            "Environment": [
+                "Staging",
+                "Test"
+            ]
         }
     ]
 }
