@@ -10,16 +10,8 @@
             ]
         },
         {
-            "Name": "name2",
-            "Value": "puru2",
-            "Environment": [
-                "Staging",
-                "Test"
-            ]
-        },
-        {
             "Name": "name1",
-            "Value": "Development",
+            "Value": "Dev",
             "Environment": [
                 "Development"
             ]
@@ -30,6 +22,14 @@
             "Environment": [
                 "Production"
                 
+            ]
+        },
+        {
+            "Name": "name2",
+            "Value": "puru2",
+            "Environment": [
+                "Staging",
+                "Test"
             ]
         }
     ]

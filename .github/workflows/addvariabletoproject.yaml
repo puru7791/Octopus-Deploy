@@ -11,115 +11,227 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    #  - name: Commit report
-    #    if: steps.check_changes.outcome ! = 'success'
-    #    env:
-    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #    run: |
-    #     git config --global user.name 'Github Action'
-    #     git config --global user.email 'puru7791@users.noreply.github.com'
-    #     git remote set-url origin https://github.com/${GITHUB_REPOSITORY}.git
-    #     #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-    #     git checkout "${GITHUB_REF:11}"
-    #     git add -A
-    #     git commit -m "Auto-generated: Added extracted Octopus variables file"
-    #     git push origin "${GITHUB_REF:11}"
-    - name: Add variable to the Project
+    - name: Add variables pattern-2
       shell: pwsh
-      env: 
+      env:
         destProjectName: First-project
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
-        variableSetFilePath: demo-variables.json
-      run: |
-        function Set-OctopusVariables {
+        variableSetFilePath: variable.json
+      run: | 
+        function Set-OctopusVariable {
             param(
-                $octopusURL = "", # Octopus Server URL
-                $octopusAPIKey = "",               # API key goes here
-                $projectName = "",                        # Replace with your project name
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName,                        # Replace with your project name
                 $spaceName = "Default",                   # Replace with the name of the space you are working in
-                $variablesFilePath = "$env:variableSetFilePath", # Path to JSON file containing variables
-                $gitRefOrBranchName = $null               # Set this value if you are storing a plain-text variable and the project is version controlled. If no value is set, the default branch will be used.
+                $environments = @(),                      # Array of environment names
+                $varName = "",                            # Replace with the name of the variable
+                $varValue = ""                            # Replace with the value of the variable
             )
         
+            Write-Output "Starting to process variable $varName"
+        
             # Defines header for API call
-            $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+            $header = @{
+                "X-Octopus-ApiKey" = $octopusAPIKey
+                "Content-Type" = "application/json"
+            }
         
             # Get space
             $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
+            Write-Output "Space ID: $($space.Id)"
         
             # Get project
             $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object {$_.Name -eq $projectName}
+            Write-Output "Project ID: $($project.Id)"
         
             # Get project variables
             $projectVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
+            Write-Output "Retrieved project variables"
         
-            if($project.IsVersionControlled -eq $true) {
-                if ([string]::IsNullOrWhiteSpace($gitRefOrBranchName)) {
-                    $gitRefOrBranchName = $project.PersistenceSettings.DefaultBranch
-                    Write-Output "Using $($gitRefOrBranchName) as the gitRef for this operation."
-                }
-                $versionControlledVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/$($gitRefOrBranchName)/variables" -Headers $header
-            }
-        
-            # Load variables from the JSON file
-            $variablesData = Get-Content -Raw -Path $variablesFilePath | ConvertFrom-Json
-            $variables = $variablesData.Variables
-            $scopeValues = $variablesData.ScopeValues.Environments
-        
-            foreach ($variable in $variables) {
-                $scopeNames = @()
-                $scopeIds = @()
-        
-                if ($variable.Scope.Environment) {
-                    foreach ($scopeId in $variable.Scope.Environment) {
-                        $environmentObj = $scopeValues | Where-Object { $_.Id -eq $scopeId }
-                        if ($environmentObj) {
-                            $scopeIds += $environmentObj.Id
-                            $scopeNames += $environmentObj.Name
-                        }
-                    }
-                }
-        
-                foreach ($scopeName in $scopeNames) {
-                    $variableObject = @{
-                        Name = $variable.Name
-                        Value = $variable.Value
-                        Type = $variable.Type
-                        IsSensitive = $variable.IsSensitive
-                        Scope = @{ Environment = @($scopeIds | Where-Object { $scopeValues | Where-Object { $_.Name -eq $scopeName } }) }
-                    }
-        
-                    # Assign the correct variables based on version-controlled project or not
-                    if($project.IsVersionControlled -eq $True -and $variableObject.IsSensitive -eq $False) {
-                        $projectVariables = $versionControlledVariables
-                    }
-        
-                    # Check to see if variable is already present. If so, removing old version(s).
-                    $variablesWithSameName = $projectVariables.Variables | Where-Object {$_.Name -eq $variableObject.Name}
-        
-                    if ($variablesWithSameName.Scope.Environment -eq $variableObject.Scope.Environment){
-                        # The existing variable with the same name is scoped to the same environment, removing it
-                        $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -ne $variablesWithSameName.id }
-                    }
-        
-                    # Adding the new value
-                    $projectVariables.Variables += $variableObject
+            # Get environment IDs to scope to
+            $environmentIds = @()
+            foreach ($envName in $environments) {
+                Write-Output "Attempting to find environment: $envName"
+                $environmentObj = $projectVariables.ScopeValues.Environments | Where-Object { $_.Name -eq $envName } | Select-Object -First 1
+                if ($environmentObj -ne $null) {
+                    Write-Output "Environment $envName found with ID: $($environmentObj.Id)"
+                    $environmentIds += $environmentObj.Id
+                } else {
+                    Write-Output "Environment $envName not found"
                 }
             }
+        
+            # Define values for variable
+            $variable = [PSCustomObject]@{
+                Name = $varName
+                Value = $varValue
+                Type = "String"
+                IsSensitive = $false
+                Scope = @{
+                    Environment = $environmentIds
+                }
+            }
+        
+            Write-Output "Variable details prepared"
+        
+            # Remove existing variables with the same name and scope
+            foreach ($envId in $environmentIds) {
+                $existingVar = $projectVariables.Variables | Where-Object { 
+                    $_.Name -eq $varName -and ($_.Scope.Environment -contains $envId)
+                }
+                $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.Id -notin $existingVar.Id }
+            }
+        
+            # Ensure project variables are treated as an array
+            $projectVariables.Variables = @($projectVariables.Variables)
+        
+            # Add the new value to the variables collection
+            $projectVariables.Variables += $variable
+            Write-Output "Added variable $varName to the project variables"
         
             # Update the collection
-            if($project.IsVersionControlled -eq $True -and $variableObject.IsSensitive -eq $False) {
-                Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/$($gitRefOrBranchName)/variables" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)    
-            }
-            else {
-                Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
-            }
+            Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
+            Write-Output "Updated project variables on the server"
         }
         
-        Set-OctopusVariables -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "First-project" -variablesFilePath "$env:variableSetFilePath" -gitRefOrBranchName $null
+        function Set-OctopusVariablesFromJson {
+            param(
+                $jsonFilePath,                            # Path to the JSON file
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName = "",                        # Replace with your project name
+                $spaceName = "Default"                    # Replace with the name of the space you are working in
+            )
+        
+            Write-Output "Loading variables from JSON file: $jsonFilePath"
+        
+            # Read JSON file
+            $jsonContent = Get-Content -Path $jsonFilePath -Raw | ConvertFrom-Json
+        
+            Write-Output "Loaded variables JSON content"
+        
+            # Iterate through each variable in the JSON file
+            foreach ($variable in $jsonContent.Variables) {
+                Write-Output "Processing variable: $($variable.Name)"
+                $environments = @()
+                if ($variable.Environment -is [string]) {
+                    $environments += $variable.Environment
+                } elseif ($variable.Environment -is [array]) {
+                    $environments += $variable.Environment
+                }
+                
+                Set-OctopusVariable -octopusURL $octopusURL `
+                                    -octopusAPIKey $octopusAPIKey `
+                                    -projectName $projectName `
+                                    -spaceName $spaceName `
+                                    -environments $environments `
+                                    -varName $variable.Name `
+                                    -varValue $variable.Value
+            }
+            Write-Output "Completed processing variables from JSON file"
+        }
+        
+        # Example call to the function
+        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableSetFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "First-project"
+        
+    # - name: Add variable to the Project pattern-1
+    #   shell: pwsh
+    #   env: 
+    #     destProjectName: First-project
+    #     OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    #     OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    #     SpaceName: Default
+    #     variableSetFilePath: demo-variables.json
+    #   run: |
+    #     function Set-OctopusVariables {
+    #         param(
+    #             $octopusURL = "", # Octopus Server URL
+    #             $octopusAPIKey = "",               # API key goes here
+    #             $projectName = "",                        # Replace with your project name
+    #             $spaceName = "Default",                   # Replace with the name of the space you are working in
+    #             $variablesFilePath = "$env:variableSetFilePath", # Path to JSON file containing variables
+    #             $gitRefOrBranchName = $null               # Set this value if you are storing a plain-text variable and the project is version controlled. If no value is set, the default branch will be used.
+    #         )
+        
+    #         # Defines header for API call
+    #         $header = @{ "X-Octopus-ApiKey" = $octopusAPIKey }
+        
+    #         # Get space
+    #         $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
+        
+    #         # Get project
+    #         $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object {$_.Name -eq $projectName}
+        
+    #         # Get project variables
+    #         $projectVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
+        
+    #         if($project.IsVersionControlled -eq $true) {
+    #             if ([string]::IsNullOrWhiteSpace($gitRefOrBranchName)) {
+    #                 $gitRefOrBranchName = $project.PersistenceSettings.DefaultBranch
+    #                 Write-Output "Using $($gitRefOrBranchName) as the gitRef for this operation."
+    #             }
+    #             $versionControlledVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/$($gitRefOrBranchName)/variables" -Headers $header
+    #         }
+        
+    #         # Load variables from the JSON file
+    #         $variablesData = Get-Content -Raw -Path $variablesFilePath | ConvertFrom-Json
+    #         $variables = $variablesData.Variables
+    #         $scopeValues = $variablesData.ScopeValues.Environments
+        
+    #         foreach ($variable in $variables) {
+    #             $scopeNames = @()
+    #             $scopeIds = @()
+        
+    #             if ($variable.Scope.Environment) {
+    #                 foreach ($scopeId in $variable.Scope.Environment) {
+    #                     $environmentObj = $scopeValues | Where-Object { $_.Id -eq $scopeId }
+    #                     if ($environmentObj) {
+    #                         $scopeIds += $environmentObj.Id
+    #                         $scopeNames += $environmentObj.Name
+    #                     }
+    #                 }
+    #             }
+        
+    #             foreach ($scopeName in $scopeNames) {
+    #                 $variableObject = @{
+    #                     Name = $variable.Name
+    #                     Value = $variable.Value
+    #                     Type = $variable.Type
+    #                     IsSensitive = $variable.IsSensitive
+    #                     Scope = @{ Environment = @($scopeIds | Where-Object { $scopeValues | Where-Object { $_.Name -eq $scopeName } }) }
+    #                 }
+        
+    #                 # Assign the correct variables based on version-controlled project or not
+    #                 if($project.IsVersionControlled -eq $True -and $variableObject.IsSensitive -eq $False) {
+    #                     $projectVariables = $versionControlledVariables
+    #                 }
+        
+    #                 # Check to see if variable is already present. If so, removing old version(s).
+    #                 $variablesWithSameName = $projectVariables.Variables | Where-Object {$_.Name -eq $variableObject.Name}
+        
+    #                 if ($variablesWithSameName.Scope.Environment -eq $variableObject.Scope.Environment){
+    #                     # The existing variable with the same name is scoped to the same environment, removing it
+    #                     $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.id -ne $variablesWithSameName.id }
+    #                 }
+        
+    #                 # Adding the new value
+    #                 $projectVariables.Variables += $variableObject
+    #             }
+    #         }
+        
+    #         # Update the collection
+    #         if($project.IsVersionControlled -eq $True -and $variableObject.IsSensitive -eq $False) {
+    #             Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/projects/$($project.Id)/$($gitRefOrBranchName)/variables" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)    
+    #         }
+    #         else {
+    #             Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
+    #         }
+    #     }
+        
+    #     Set-OctopusVariables -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "First-project" -variablesFilePath "$env:variableSetFilePath" -gitRefOrBranchName $null
     
        
     
