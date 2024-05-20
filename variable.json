@@ -17,6 +17,27 @@
             ]
         },
         {
+            "Name": "name1",
+            "Value": "QA-from-file",
+            "Environment": [
+                "QA"
+            ]
+        },
+        {
+            "Name": "name1",
+            "Value": "Test-from-file",
+            "Environment": [
+                "Test"
+            ]
+        },
+        {
+            "Name": "name1",
+            "Value": "Staging-from-file",
+            "Environment": [
+                "Staging"
+            ]
+        },
+        {
             "Name": "name2",
             "Value": "Prod",
             "Environment": [
