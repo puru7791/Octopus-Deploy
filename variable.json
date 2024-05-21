@@ -13,10 +13,10 @@
         },
         {
             "Name": "name1",
-            "Value": "scope-test",
+            "Value": "scope-test-movingtoQA",
             "Scope": {
                 "Environment": [
-                    "Development"
+                    "QA"
                 ]
             }
         },
@@ -61,7 +61,6 @@
             "Value": "puru2-scope-test",
             "Scope": {
                 "Environment": [
-                    "Staging",
                     "Test"
                 ]
             }
