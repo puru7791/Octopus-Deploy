@@ -1,4 +1,4 @@
-name: Run PowerShell Script
+name: Python Script to export global variables to project json
 on:
   # push:
   #   branches: 
