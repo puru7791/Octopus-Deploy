@@ -83,46 +83,37 @@ jobs:
                 return
             }
         
-            # Check if variable with same name, scope, and value already exists
+            # Check if variable with same name and scope exists
             $existingVariable = $projectVariables.Variables | Where-Object {
-                $_.Name -eq $varName -and
-                ($_.Scope.Environment -eq $scopeValues.Environment) -and
-                $_.Value -eq $varValue
+                $_.Name -eq $varName -and ($_.Scope.Environment -eq $scopeValues.Environment)
             }
         
             if ($existingVariable) {
-                Write-Output "Variable with the same name, scope, and value already exists. Skipping addition."
-                return
-            }
-        
-            # Remove existing variables with the same name and scope
-            foreach ($envId in $scopeValues.Environment) {
-                $existingVar = $projectVariables.Variables | Where-Object {
-                    $_.Name -eq $varName -and ($_.Scope.Environment -contains $envId)
+                # If variable with same value and scope exists, skip updating
+                if ($existingVariable.Value -eq $varValue) {
+                    Write-Output "Variable with the same name, scope, and value already exists. Skipping update."
+                    return
+                } else {
+                    # Update existing variable
+                    $existingVariable.Value = $varValue
+                    Write-Output "Updated existing variable $varName with new value $varValue"
                 }
-                if ($existingVar) {
-                    Write-Output "Removing existing variable(s) with same name and environment scope"
-                    $projectVariables.Variables = $projectVariables.Variables | Where-Object { $_.Id -notin $existingVar.Id }
+            } else {
+                # Define new variable
+                $variable = [PSCustomObject]@{
+                    Name = $varName
+                    Value = $varValue
+                    Type = "String"
+                    IsSensitive = $false
+                    Scope = $scopeValues
                 }
+        
+                Write-Output "Variable details prepared"
+        
+                # Add the new value to the variables collection
+                $projectVariables.Variables += $variable
+                Write-Output "Added variable $varName to the project variables"
             }
-        
-            # Define values for variable
-            $variable = [PSCustomObject]@{
-                Name = $varName
-                Value = $varValue
-                Type = "String"
-                IsSensitive = $false
-                Scope = $scopeValues
-            }
-        
-            Write-Output "Variable details prepared"
-        
-            # Ensure project variables are treated as an array
-            $projectVariables.Variables = @($projectVariables.Variables)
-        
-            # Add the new value to the variables collection
-            $projectVariables.Variables += $variable
-            Write-Output "Added variable $varName to the project variables"
         
             # Update the collection
             Write-Output "Updating project variables on the server"
@@ -170,7 +161,7 @@ jobs:
         
         # Example call to the function
         #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
-    
+
         Set-OctopusVariablesFromJson -jsonFilePath "$env:variableSetFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
 ########################################################
 #    
