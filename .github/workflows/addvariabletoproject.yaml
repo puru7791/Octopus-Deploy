@@ -22,9 +22,9 @@ jobs:
       run: | 
         function Set-OctopusVariable {
             param(
-                $octopusURL = "https://xxx.octopus.app/", # Octopus Server URL
-                $octopusAPIKey = "API-xxx",               # API key goes here
-                $projectName = "",                        # Replace with your project name
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName,                        # Replace with your project name
                 $spaceName = "Default",                   # Replace with the name of the space you are working in
                 $environments = @(),                      # Array of environment names
                 $varName = "",                            # Replace with the name of the variable
@@ -125,9 +125,9 @@ jobs:
         function Set-OctopusVariablesFromJson {
             param(
                 $jsonFilePath,                            # Path to the JSON file
-                $octopusURL = "https://xxx.octopus.app/", # Octopus Server URL
-                $octopusAPIKey = "API-xxx",               # API key goes here
-                $projectName = "",                        # Replace with your project name
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName,                        # Replace with your project name
                 $spaceName = "Default"                    # Replace with the name of the space you are working in
             )
         
@@ -257,6 +257,65 @@ jobs:
     #     }
         
     #     Set-OctopusVariables -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "First-project" -variablesFilePath "$env:variableSetFilePath" -gitRefOrBranchName $null
-    
-       
-    
+    #########################################################
+    # 
+    #         Sample Variable.json file
+    #  
+    #########################################################   
+#     {
+#     "Variables": [
+#         {
+#             "Name": "name1",
+#             "Value": "puru1",
+#                 "Environment": [
+#                     "Production",
+#                     "Test",
+#                     "QA"
+#                 ]
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "Dev",
+#                 "Environment": [
+#                     "Development"
+#                 ]
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "QA-from-file",
+#                 "Environment": [
+#                     "QA"
+#                 ]
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "Test-from-file",
+#                 "Environment": [
+#                     "Test"
+#                 ]
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "Staging-from-file",
+#                 "Environment": [
+#                     "Staging"
+#                 ]
+#         },
+#         {
+#             "Name": "name2",
+#             "Value": "Prod",
+#                 "Environment": [
+#                     "Production"   
+
+#                 ]
+#         },
+#         {
+#             "Name": "name2",
+#             "Value": "puru2",
+#                 "Environment": [
+#                     "Staging",
+#                     "Test"
+#                 ]
+#         }
+#     ]
+# }
