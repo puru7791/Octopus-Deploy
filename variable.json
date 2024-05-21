@@ -2,7 +2,7 @@
     "Variables": [
         {
             "Name": "name1",
-            "Value": "scope-test",
+            "Value": "Test/QA/Prod-scope-test",
             "Scope": {
                 "Environment": [
                     "Production",
