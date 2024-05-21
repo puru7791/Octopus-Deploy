@@ -83,20 +83,26 @@ jobs:
                 return
             }
         
-            # Check if variable with same name and scope exists
-            $existingVariable = $projectVariables.Variables | Where-Object {
+            # Define a separate list of existing variables with the same name and scope
+            $existingVariables = $projectVariables.Variables | Where-Object {
                 $_.Name -eq $varName -and ($_.Scope.Environment -eq $scopeValues.Environment)
             }
         
+            # Check if an exact match for variable name, scope, and value already exists
+            $existingVariable = $existingVariables | Where-Object {
+                $_.Value -eq $varValue
+            }
+        
             if ($existingVariable) {
-                # If variable with same value and scope exists, skip updating
-                if ($existingVariable.Value -eq $varValue) {
-                    Write-Output "Variable with the same name, scope, and value already exists. Skipping update."
-                    return
-                } else {
-                    # Update existing variable
-                    $existingVariable.Value = $varValue
-                    Write-Output "Updated existing variable $varName with new value $varValue"
+                Write-Output "Variable with the same name, scope, and value already exists. Skipping update."
+                return
+            }
+        
+            if ($existingVariables) {
+                # Update existing variable with new value
+                foreach ($var in $existingVariables) {
+                    $var.Value = $varValue
+                    Write-Output "Updated existing variable $($var.Name) with new value $varValue"
                 }
             } else {
                 # Define new variable
