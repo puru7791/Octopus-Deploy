@@ -52,11 +52,11 @@ jobs:
         $variables | ConvertTo-Json -Depth 10 | Out-File -FilePath $outputFilePath    #<--- Collection of variables of the variable set
 
         Write-Host "Variables data of $variableSetName has been exported and saved to $outputFilePath"
-    - name:
-      uses: puru7791/Octopus-Deploy/.github/workflows/python.yaml@main
-      with:
-        source_data: ./source_data
-        dest_json: demo-variables.json
+    # - name: calling workflow
+    #   uses: puru7791/Octopus-Deploy/.github/workflows/python.yaml@main
+    #   with:
+    #     source_data: ./source_data
+    #     dest_json: demo-variables.json
     - name: Get the changes in the target file
       run: |
         git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
