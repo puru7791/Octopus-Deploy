@@ -110,7 +110,7 @@ jobs:
 
         # Send the PUT request to update the project variables
         try {
-            $updateResponse = Invoke-RestMethod -Method Put -Uri "$octopusURL/api/variables/$destinationProjectVariableSetId" -Headers $header -Body $jsonPayload
+            Invoke-RestMethod -Method Put -Uri "$octopusURL/api/variables/$destinationProjectVariableSetId" -Headers $header -Body $jsonPayload
             Write-Output "Project variables updated successfully."
         } catch {
             Write-Error "Failed to update project variables: $_"
