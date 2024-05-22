@@ -14,7 +14,7 @@ jobs:
     - name: Add variables pattern-2
       shell: pwsh
       env:
-        destProjectName: First-project
+        destProjectName: third-project
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
@@ -168,7 +168,7 @@ jobs:
         # Example call to the function
         #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
 
-        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableSetFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
+        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableSetFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "$env:destProjectName"
     - name: Clear Workspace
       if: always()
       run: |
