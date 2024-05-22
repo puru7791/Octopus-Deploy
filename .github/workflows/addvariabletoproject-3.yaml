@@ -11,7 +11,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Add variables pattern-2
+    - name: Add variables pattern-3
       shell: pwsh
       env:
         destProjectName: First-project
@@ -147,7 +147,11 @@ jobs:
             if ($projectVariables) {
                 Write-Output "Updating project variables on the server"
                 try {
-                    Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($projectVariables.SpaceId)/variables/$($projectVariables.Id)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
+                    $header = @{
+                        "X-Octopus-ApiKey" = $octopusAPIKey
+                        "Content-Type" = "application/json"
+                    }
+                    Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($projectVariables.Id)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
                     Write-Output "Successfully updated project variables on the server"
                 } catch {
                     Write-Output "Error updating project variables: $_"
