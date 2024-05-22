@@ -71,6 +71,10 @@ jobs:
 
             foreach ($scopeEnvironment in $variableScope) {
                 $environmentId = Get-EnvironmentIdByName -environmentName $scopeEnvironment
+                if ($environmentId -eq $null) {
+                    Write-Warning "Environment '$scopeEnvironment' not found. Skipping variable '$variableName'."
+                    continue
+                }
                 $matchingVariable = $existingVariables | Where-Object { $_.Name -eq $variableName -and $_.Scope.Environment -contains $environmentId }
 
                 if ($matchingVariable) {
@@ -98,9 +102,11 @@ jobs:
                 }
             }
         }
-
+        # Ensure variables are in the correct format
         # Update the project variable set with new/updated variables
-        $variableSet.Variables = $existingVariables
+        #$variableSet.Variables = $existingVariables
+        $variableSet.Variables = @($existingVariables)
+        
         # Convert the variable set to JSON
         $jsonPayload = $variableSet | ConvertTo-Json -Depth 10
 
