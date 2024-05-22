@@ -169,6 +169,10 @@ jobs:
         #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
 
         Set-OctopusVariablesFromJson -jsonFilePath "$env:variableSetFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
+    - name: Clean Workspace
+      if: always()
+      uses: AutoModality/action-clean@v1.1.0
+  
 ########################################################
 #    
 #            Sample Variable.json file
