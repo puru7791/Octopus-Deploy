@@ -28,8 +28,8 @@ jobs:
 
         # Define working variables
         $spaceName = "Default"
-        $variableSetFilePath = "/path/to/project-variables-to-import.json"
-        $destinationProjectName = "your-project-to-import-to"
+        $variableSetFilePath = "$env:variableSetFilePath"
+        $destinationProjectName = "$env:destProjectName"
 
         # Set this value to add additional variable values found on source data not in destination
         $addAdditionalVariableValuesOnExistingVariableSets = $True
