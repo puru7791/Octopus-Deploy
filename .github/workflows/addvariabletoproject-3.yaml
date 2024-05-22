@@ -166,6 +166,8 @@ jobs:
         # Example call to the function
         #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
         Set-OctopusVariablesFromJson -jsonFilePath "$env:variableFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
+        Write-Output "Loaded variables JSON content"
+        $jsonContent
     - name: Clear Workspace
       if: always()
       run: |
