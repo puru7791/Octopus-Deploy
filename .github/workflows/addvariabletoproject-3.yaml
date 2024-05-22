@@ -14,7 +14,7 @@ jobs:
     - name: Add variables pattern-3
       shell: pwsh
       env:
-        destProjectName: First-project
+        destProjectName: third-project
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
