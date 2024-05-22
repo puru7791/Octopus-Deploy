@@ -30,6 +30,7 @@ jobs:
         # Headers for API requests
         $header = @{
             "X-Octopus-ApiKey" = $apiKey
+            "Content-Type" = "application/json"
         }
 
         # Fetch space details
