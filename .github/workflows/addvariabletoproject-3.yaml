@@ -186,8 +186,10 @@ jobs:
                         Version = $projectVariables.Version
                         OwnerId = $project.VariableSetId
                     }
-        
-                    Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($updatePayload | ConvertTo-Json -Depth 10)
+                    $updateUri = "$octopusURL$($project.Links.Variables)"
+                    Write-Output "Saving variables to $updateUri"
+                    Invoke-RestMethod -Method Put -Uri $updateUri -Body ($projectVariables | ConvertTo-Json -Depth 10) -Headers $header | Out-Null
+                    #Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($updatePayload | ConvertTo-Json -Depth 10)
                     Write-Output "Successfully updated project variables on the server"
                 } catch {
                     Write-Output "Error updating project variables: $_"
