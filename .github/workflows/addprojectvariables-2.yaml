@@ -101,9 +101,20 @@ jobs:
 
         # Update the project variable set with new/updated variables
         $variableSet.Variables = $existingVariables
-        $updateResponse = Invoke-RestMethod -Method Put -Uri "$octopusURL/api/variables/$destinationProjectVariableSetId" -Headers $header -Body ($variableSet | ConvertTo-Json -Depth 10)
+        # Convert the variable set to JSON
+        $jsonPayload = $variableSet | ConvertTo-Json -Depth 10
 
-        Write-Output "Project variables updated successfully."
+        # Log the JSON payload for debugging
+        Write-Output "JSON Payload:"
+        Write-Output $jsonPayload
+
+        # Send the PUT request to update the project variables
+        try {
+            $updateResponse = Invoke-RestMethod -Method Put -Uri "$octopusURL/api/variables/$destinationProjectVariableSetId" -Headers $header -Body $jsonPayload
+            Write-Output "Project variables updated successfully."
+        } catch {
+            Write-Error "Failed to update project variables: $_"
+        }
     - name: Clear Workspace
       if: always()
       run: |
