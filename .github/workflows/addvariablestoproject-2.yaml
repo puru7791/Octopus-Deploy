@@ -102,7 +102,7 @@ jobs:
                 # Update existing variable with new value
                 foreach ($var in $existingVariables) {
                     $var.Value = $varValue
-                    Write-Output "Updated existing variable $($var.Name) with new value $varValue"
+                    Write-Output "Updated existing variable $($var.Name) with new value $varValue and env $envName"
                 }
             } else {
                 # Define new variable
