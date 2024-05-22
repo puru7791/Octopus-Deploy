@@ -26,6 +26,7 @@ jobs:
         $apiKey = "$env:OCTOPUS_API_KEY"
         $spaceName = "Default" # Example Space ID
         $variableJsonPath = "$env:variableFilePath"
+        $destinationProjectName = "First-project"
         # Set headers for the API requests
         $header = @{
             "X-Octopus-ApiKey" = $apiKey
@@ -35,8 +36,8 @@ jobs:
         $spaceList = Invoke-RestMethod "$octopusURL/api/spaces/all" -Headers $header
         $space = $spaceList.Items | Where-Object { $_.Name -eq $spaceName }
         # Define the destination project name
-        $destinationProjectName = "First-project"
-
+        
+        Write-Output "Space ID: $($space.Id)"
         # Load the project list and find the destination project
         $projectList = Invoke-RestMethod "$octopusURL/api/$($space.Id)/projects/all" -Headers $header
         $destinationProject = $projectList | Where-Object { $_.Name -eq $destinationProjectName }
