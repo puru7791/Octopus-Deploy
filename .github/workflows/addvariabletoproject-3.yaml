@@ -3,6 +3,7 @@ on:
 #   push:
 #     branches: 
 #       - main
+
   workflow_dispatch:
 jobs:
   add-project-variables-from-file-2:
@@ -40,43 +41,13 @@ jobs:
         
         function Set-OctopusVariable {
             param(
-                $octopusURL,                             # Octopus Server URL
-                $octopusAPIKey,                          # API key goes here
-                $projectName,                            # Replace with your project name
-                $spaceName,                              # Replace with the name of the space you are working in
+                $projectVariables,                       # Existing project variables
+                $environments,                           # All environments
+                $project,                                # Project object
                 $scopes,                                 # Dictionary of scope names and values
-                $varName,                                # Replace with the name of the variable
-                $varValue                                # Replace with the value of the variable
+                $varName,                                # Name of the variable
+                $varValue                                # Value of the variable
             )
-        
-            # Defines header for API call
-            $header = @{
-                "X-Octopus-ApiKey" = $octopusAPIKey
-                "Content-Type" = "application/json"
-            }
-        
-            # Get space
-            $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
-            if ($null -eq $space) {
-                throw "Space not found: $spaceName"
-            }
-        
-            # Get project
-            $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object {$_.Name -eq $projectName}
-            if ($null -eq $project) {
-                throw "Project not found: $projectName"
-            }
-        
-            # Get project variables
-            $projectVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
-            if ($null -eq $projectVariables) {
-                throw "Project variables not found"
-            }
-        
-            # Get all environments
-            $environments = Get-OctopusEnvironment -octopusURL $octopusURL -octopusAPIKey $octopusAPIKey -spaceId $space.Id
-        
-            Write-Output "Retrieved environments: $($environments | ForEach-Object { $_.Name })"
         
             # Prepare scope values
             $scopeValues = @{
@@ -114,7 +85,7 @@ jobs:
                 # Update existing variable with new value
                 foreach ($var in $existingVariables) {
                     $var.Value = $varValue
-                    Write-Output "Updated existing variable $($var.Name) with new value $varValue"
+                    Write-Output "Updated existing variable $($var.Name) with new value $varValue on $envName"
                 }
             } else {
                 # Define new variable
@@ -137,9 +108,9 @@ jobs:
         function Set-OctopusVariablesFromJson {
             param(
                 $jsonFilePath,                            # Path to the JSON file
-                $octopusURL, # Octopus Server URL
-                $octopusAPIKey,               # API key goes here
-                $projectName,                        # Replace with your project name
+                $octopusURL,                              # Octopus Server URL
+                $octopusAPIKey,                           # API key goes here
+                $projectName,                             # Replace with your project name
                 $spaceName = "Default"                    # Replace with the name of the space you are working in
             )
         
@@ -150,8 +121,34 @@ jobs:
         
             Write-Output "Loaded variables JSON content"
         
-            # Initialize project variables
-            $projectVariables = $null
+            # Defines header for API call
+            $header = @{
+                "X-Octopus-ApiKey" = $octopusAPIKey
+                "Content-Type" = "application/json"
+            }
+        
+            # Get space
+            $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
+            if ($null -eq $space) {
+                throw "Space not found: $spaceName"
+            }
+        
+            # Get project
+            $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object {$_.Name -eq $projectName}
+            if ($null -eq $project) {
+                throw "Project not found: $projectName"
+            }
+        
+            # Get project variables
+            $projectVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
+            if ($null -eq $projectVariables) {
+                throw "Project variables not found"
+            }
+        
+            # Get all environments
+            $environments = Get-OctopusEnvironment -octopusURL $octopusURL -octopusAPIKey $octopusAPIKey -spaceId $space.Id
+        
+            Write-Output "Retrieved environments: $($environments | ForEach-Object { $_.Name })"
         
             # Iterate through each variable in the JSON file
             foreach ($variable in $jsonContent.Variables) {
@@ -160,25 +157,21 @@ jobs:
                     Environment = $variable.Scope.Environment
                 }
                 
-                $projectVariables = Set-OctopusVariable -octopusURL $octopusURL `
-                                                    -octopusAPIKey $octopusAPIKey `
-                                                    -projectName $projectName `
-                                                    -spaceName $spaceName `
-                                                    -scopes $scopes `
-                                                    -varName $variable.Name `
-                                                    -varValue $variable.Value
+                $projectVariables = Set-OctopusVariable -projectVariables $projectVariables `
+                                                        -environments $environments `
+                                                        -project $project `
+                                                        -scopes $scopes `
+                                                        -varName $variable.Name `
+                                                        -varValue $variable.Value
+                Write-Output "Added $($variable.Name) to the project variable list with $($variable.Value) on $($scopes.Environment)"
             }
         
             if ($projectVariables) {
                 Write-Output "Updating project variables on the server"
                 try {
-                    $header = @{
-                        "X-Octopus-ApiKey" = $octopusAPIKey
-                        "Content-Type" = "application/json"
-                    }
-                    # Debug output to verify the URL and IDs
-                    Write-Output "Update URL: $octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)"
-                    Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
+                    $updateUri = "$octopusURL$($project.Links.Variables)"
+                    Write-Output "Saving variables to $updateUri"
+                    Invoke-RestMethod -Method Put -Uri $updateUri -Body ($projectVariables | ConvertTo-Json -Depth 10) -Headers $header | Out-Null
                     Write-Output "Successfully updated project variables on the server"
                 } catch {
                     Write-Output "Error updating project variables: $_"
@@ -189,8 +182,8 @@ jobs:
         }
         
         # Example call to the function
-        #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
-        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
+        # Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "third"
+        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "third-project"
     - name: Clear Workspace
       if: always()
       run: |
