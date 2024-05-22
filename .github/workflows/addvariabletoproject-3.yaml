@@ -1,0 +1,246 @@
+name: Add variable job from file pattern-3
+on:
+#   push:
+#     branches: 
+#       - main
+  workflow_dispatch:
+jobs:
+  add-project-variables-from-file-2:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Add variables pattern-2
+      shell: pwsh
+      env:
+        destProjectName: First-project
+        OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+        OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        SpaceName: Default
+        variableFilePath: variable.json
+      run: |
+        function Set-OctopusVariable {
+            param(
+                $octopusURL,                             # Octopus Server URL
+                $octopusAPIKey,                          # API key goes here
+                $projectName,                            # Replace with your project name
+                $spaceName,                              # Replace with the name of the space you are working in
+                $scopes,                                 # Dictionary of scope names and values
+                $varName,                                # Replace with the name of the variable
+                $varValue                                # Replace with the value of the variable
+            )
+        
+            # Defines header for API call
+            $header = @{
+                "X-Octopus-ApiKey" = $octopusAPIKey
+                "Content-Type" = "application/json"
+            }
+        
+            # Get space
+            $space = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/spaces/all" -Headers $header) | Where-Object {$_.Name -eq $spaceName}
+            if ($space -eq $null) {
+                throw "Space not found: $spaceName"
+            }
+        
+            # Get project
+            $project = (Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/projects/all" -Headers $header) | Where-Object {$_.Name -eq $projectName}
+            if ($project -eq $null) {
+                throw "Project not found: $projectName"
+            }
+        
+            # Get project variables
+            $projectVariables = Invoke-RestMethod -Method Get -Uri "$octopusURL/api/$($space.Id)/variables/$($project.VariableSetId)" -Headers $header
+            if ($projectVariables -eq $null) {
+                throw "Project variables not found"
+            }
+        
+            # Prepare scope values
+            $scopeValues = @{
+                Environment = @()
+            }
+            foreach ($envName in $scopes.Environment) {
+                $environmentObj = $projectVariables.ScopeValues.Environments | Where-Object { $_.Name -eq $envName } | Select-Object -First 1
+                if ($environmentObj -ne $null) {
+                    $scopeValues.Environment += $environmentObj.Id
+                }
+            }
+        
+            if ($scopeValues.Environment.Count -eq 0) {
+                throw "No valid environment IDs found for environments: $($scopes.Environment -join ', ')"
+            }
+        
+            # Define a separate list of existing variables with the same name and scope
+            $existingVariables = $projectVariables.Variables | Where-Object {
+                $_.Name -eq $varName -and ($_.Scope.Environment -eq $scopeValues.Environment)
+            }
+        
+            # Check if an exact match for variable name, scope, and value already exists
+            $existingVariable = $existingVariables | Where-Object {
+                $_.Value -eq $varValue
+            }
+        
+            if ($existingVariable) {
+                Write-Output "Variable with the same name, scope, and value already exists. Skipping update."
+                return $projectVariables
+            }
+        
+            if ($existingVariables) {
+                # Update existing variable with new value
+                foreach ($var in $existingVariables) {
+                    $var.Value = $varValue
+                    Write-Output "Updated existing variable $($var.Name) with new value $varValue"
+                }
+            } else {
+                # Define new variable
+                $variable = [PSCustomObject]@{
+                    Name = $varName
+                    Value = $varValue
+                    Type = "String"
+                    IsSensitive = $false
+                    Scope = $scopeValues
+                }
+        
+                # Add the new value to the variables collection
+                $projectVariables.Variables += $variable
+                Write-Output "Added variable $varName to the project variables"
+            }
+        
+            return $projectVariables
+        }
+        
+        function Set-OctopusVariablesFromJson {
+            param(
+                $jsonFilePath,                            # Path to the JSON file
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName,                        # Replace with your project name
+                $spaceName = "Default"                    # Replace with the name of the space you are working in
+            )
+        
+            Write-Output "Loading variables from JSON file: $jsonFilePath"
+        
+            # Read JSON file
+            $jsonContent = Get-Content -Path $jsonFilePath -Raw | ConvertFrom-Json
+        
+            Write-Output "Loaded variables JSON content"
+        
+            # Initialize project variables
+            $projectVariables = $null
+        
+            # Iterate through each variable in the JSON file
+            foreach ($variable in $jsonContent.Variables) {
+                Write-Output "Processing variable: $($variable.Name)"
+                $scopes = @{
+                    Environment = $variable.Scope.Environment
+                }
+                
+                $projectVariables = Set-OctopusVariable -octopusURL $octopusURL `
+                                                    -octopusAPIKey $octopusAPIKey `
+                                                    -projectName $projectName `
+                                                    -spaceName $spaceName `
+                                                    -scopes $scopes `
+                                                    -varName $variable.Name `
+                                                    -varValue $variable.Value
+            }
+        
+            if ($projectVariables) {
+                Write-Output "Updating project variables on the server"
+                try {
+                    Invoke-RestMethod -Method Put -Uri "$octopusURL/api/$($projectVariables.SpaceId)/variables/$($projectVariables.Id)" -Headers $header -Body ($projectVariables | ConvertTo-Json -Depth 10)
+                    Write-Output "Successfully updated project variables on the server"
+                } catch {
+                    Write-Output "Error updating project variables: $_"
+                }
+            }
+        
+            Write-Output "Completed processing variables from JSON file"
+        }
+        
+        # Example call to the function
+        #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
+        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "second-project"
+    - name: Clear Workspace
+      if: always()
+      run: |
+        ls -LiteralPath .
+        rm -Recurse ${{github.workspace}}\*
+        Write-Output "Workspace has been cleared"
+        ls -LiteralPath .
+########################################################
+#    
+#            Sample Variable.json file
+#     
+########################################################
+#     {
+#     "Variables": [
+#         {
+#             "Name": "name1",
+#             "Value": "scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "Production",
+#                     "Test",
+#                     "QA"
+#                 ]
+#             }
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "Development"
+#                 ]
+#             }
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "QA-scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "QA"
+#                 ]
+#             }
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "Test-scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "Test"
+#                 ]
+#             }
+#         },
+#         {
+#             "Name": "name1",
+#             "Value": "Staging-scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "Staging"
+#                 ]
+#             }
+#         },
+#         {
+#             "Name": "name2",
+#             "Value": "Prod-scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "Production"   
+#                 ]
+#             }
+#         },
+#         {
+#             "Name": "name2",
+#             "Value": "puru2-scope-test",
+#             "Scope": {
+#                 "Environment": [
+#                     "Staging",
+#                     "Test"
+#                 ]
+#             }
+#         }
+#     ]
+# }
+
+    
