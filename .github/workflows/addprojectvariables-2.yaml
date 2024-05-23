@@ -102,6 +102,7 @@ jobs:
                         Id = [System.Guid]::NewGuid().ToString()
                         Name = $variableName
                         Value = $variableValue
+                        Type = "String"
                         Scope = @{
                             Environment = @($environmentId)
                         }
