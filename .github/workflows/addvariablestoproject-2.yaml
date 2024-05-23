@@ -4,6 +4,11 @@ on:
 #     branches: 
 #       - main
   workflow_dispatch:
+    inputs:
+      projectName: 
+        required: true
+        description: Octopus Project Name
+        default: third-project
 jobs:
   add-project-variables-from-file-2:
     runs-on: windows-latest
@@ -14,7 +19,7 @@ jobs:
     - name: Add variables pattern-2
       shell: pwsh
       env:
-        destProjectName: third-project
+        destProjectName: ${{ github.event.inputs.projectName }}
         OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
         OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         SpaceName: Default
