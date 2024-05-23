@@ -1,0 +1,65 @@
+### Create project variable via CLI
+name: Create a project variables from json via Octopus CLI 🐙
+on:
+  # push:
+  #   branches: 
+  #     - main
+  workflow_dispatch:
+env:
+    destProjectName: First-project
+    OCTOPUS_SERVER_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+    OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+    SpaceName: Default
+    variableFilePath: variable.json
+jobs:
+  Create-Octopus-variables-from-json:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install Octopus CLI 🐙
+      uses: OctopusDeploy/install-octopus-cli-action@v3
+      with:
+        version: 0.8.0
+    - name: Login into Octopus 
+      run: |
+        octopus login --server "$env:OCTOPUS_SERVER_URL" --api-key "$env:OCTOPUS_API_KEY"
+    - name: Create variables from json to Octopus Project
+      shell: pwsh
+      run: |
+        # Path to the JSON file
+        $jsonFilePath = "$env:variableFilePath"
+
+        # Octopus Deploy project name
+        $projectName = "$env:destProjectName"
+
+        # Octopus space
+        $space = "Default"
+
+        # Load the JSON file
+        $jsonContent = Get-Content -Path $jsonFilePath -Raw | ConvertFrom-Json
+
+        # Iterate over each variable in the JSON file
+        foreach ($variable in $jsonContent.Variables) {
+            $name = $variable.Name
+            $value = $variable.Value
+            $Type = $variable.Type
+
+            $environmentScopes = $variable.Scope.Environment -join ","
+
+            # Construct the Octopus CLI command
+            $command = "octopus project variable create --project=`"$projectName`" --name=`"$name`" --value=`"$value`" --environment-scope=$environmentScopes --space=`"$space`" --type=`"$Type`" --no-prompt"
+
+            # Execute the Octopus CLI command
+            Invoke-Expression $command
+        }
+    - name: Clear Workspace
+      if: always()
+      run: |
+        ls -LiteralPath .
+        rm -Recurse ${{github.workspace}}\*
+        Write-Output "Workspace has been cleared"
+        ls -LiteralPath .
+
+    
