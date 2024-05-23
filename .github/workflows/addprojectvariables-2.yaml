@@ -5,6 +5,11 @@ on:
   #   branches: 
   #     - main
   workflow_dispatch:
+    inputs:
+      projectName: 
+        required: true
+        description: Octopus Project Name
+        default: third-project
 jobs:
   build:
     runs-on: windows-latest
