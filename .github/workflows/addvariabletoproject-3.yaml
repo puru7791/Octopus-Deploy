@@ -5,6 +5,14 @@ on:
 #       - main
 
   workflow_dispatch:
+    inputs:
+      projectName: 
+        required: true
+        description: Octopus Project Name
+        default: third-project
+      variableFilePath:
+        required: true
+        
 jobs:
   add-project-variables-from-file-2:
     runs-on: windows-latest
@@ -138,9 +146,9 @@ jobs:
         function Set-OctopusVariablesFromJson {
             param(
                 $jsonFilePath,                            # Path to the JSON file
-                $octopusURL = "https://xxx.octopus.app/", # Octopus Server URL
-                $octopusAPIKey = "API-xxx",               # API key goes here
-                $projectName = "",                        # Replace with your project name
+                $octopusURL, # Octopus Server URL
+                $octopusAPIKey,               # API key goes here
+                $projectName,                        # Replace with your project name
                 $spaceName = "Default"                    # Replace with the name of the space you are working in
             )
         
@@ -201,7 +209,7 @@ jobs:
         
         # Example call to the function
         #Set-OctopusVariablesFromJson -jsonFilePath "path\to\variables.json" -octopusURL "https://xxx.octopus.app/" -octopusAPIKey "API-xxx" -projectName "hello_world"
-        Set-OctopusVariablesFromJson -jsonFilePath "$env:variableFilePath" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "third-project"
+        Set-OctopusVariablesFromJson -jsonFilePath "${{ github.event.inputs.variableFilePath }}" -octopusURL "${{ secrets.OCTOPUS_SERVER_URL }}" -octopusAPIKey "${{ secrets.OCTOPUS_API_KEY }}" -projectName "${{ github.event.inputs.projectName }}"
     # - name: Add variables pattern-3
     #   shell: pwsh
     #   env:
