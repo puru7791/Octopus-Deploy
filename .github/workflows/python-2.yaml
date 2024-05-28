@@ -1,26 +1,33 @@
-name: Python Script to export global variables to project json
+# .github/workflows/export-variables.yml
+name: Export Global Variables to Project JSON
 on:
   workflow_call:
     inputs: 
       source_data: 
         type: string
         required: true
-        description: 'Octopus VariableSet Name'
+        description: 'Path to the source data file'
       dest_json:
         type: string
         required: true
+        description: 'Path to the destination JSON file'
 
 jobs:
   build:
     runs-on: [self-hosted, linux]
+    container: 
+      image: <org>/docker-local/python:3.10
+      credentials:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Run Python script to pull out the global variables
-      shell: python
       run: |
+        python3 <<EOF
         import json
         import os
 
@@ -31,8 +38,8 @@ jobs:
             except FileNotFoundError:
                 print(f"Source file '{source_json}' not found.")
                 return
-            except json.JSONDecodeError:
-                print(f"Error decoding JSON from source file '{source_json}'.")
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON from source file '{source_json}': {e}")
                 return
 
             try:
@@ -41,34 +48,42 @@ jobs:
             except FileNotFoundError:
                 print(f"Destination file '{dest_json}' not found. Creating a new file.")
                 dest_data = {"Variables": []}
-            except json.JSONDecodeError:
-                print(f"Error decoding JSON from destination file '{dest_json}'.")
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON from destination file '{dest_json}': {e}")
                 return
 
             for variable_name in variable_names:
-                existing_variables = [variable["Name"] for variable in dest_data["Variables"]]
+                existing_variables = [variable["Name"] for variable in dest_data.get("Variables", [])]
                 if variable_name in existing_variables:
                     print(f"Variable '{variable_name}' already exists in the destination '{dest_json}' file.")
                 else:
                     print(f"Adding the '{variable_name}' property block to the destination '{dest_json}' file")
-                    extracted_data = [variable for variable in source_data["Variables"] if variable.get("Name") == variable_name]
+                    extracted_data = [variable for variable in source_data.get("Variables", []) if variable.get("Name") == variable_name]
                     dest_data["Variables"].extend(extracted_data)
 
             with open(dest_json, 'w') as f:
                 json.dump(dest_data, f, indent=2)
 
         # Read source data from file
-        source_data_file = os.getenv("GITHUB_WORKSPACE") + "/${{ inputs.source_data }}"
-        dest_json_file = os.getenv("GITHUB_WORKSPACE") + "/${{ inputs.dest_json }}"
+        source_data_file = os.path.join(os.getenv("GITHUB_WORKSPACE"), "${{ inputs.source_data }}")
+        dest_json_file = os.path.join(os.getenv("GITHUB_WORKSPACE"), "${{ inputs.dest_json }}")
 
-        with open(source_data_file, 'r') as f:
-            lines = f.readlines()
+        try:
+            with open(source_data_file, 'r') as f:
+                lines = f.readlines()
+        except FileNotFoundError:
+            print(f"Source data file '{source_data_file}' not found.")
+            exit(1)
+        except Exception as e:
+            print(f"Error reading source data file '{source_data_file}': {e}")
+            exit(1)
 
         # Process each line in source data
         for line in lines:
             line = line.strip()
             if line:  # Skip empty lines
                 source_json, *variable_names = line.split(",")
-                source_json = os.getenv("GITHUB_WORKSPACE") + "/" + source_json
+                source_json = os.path.join(os.getenv("GITHUB_WORKSPACE"), source_json)
                 # Call function to extract and add variables to destination JSON
                 extract_and_add_variable(source_json, dest_json_file, variable_names)
+        EOF
